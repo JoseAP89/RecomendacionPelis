@@ -4,6 +4,7 @@
 Diseñar y desarrollar un sistema de recomendación de películas utilizando el conjunto de
 API REST que ofrece la “Open Movie Database” en la siguiente liga:
 
+https://trakt.docs.apiary.io
 http://www.omdbapi.com/
 
 ## Especificación de requerimientos funcionales
@@ -11,13 +12,14 @@ http://www.omdbapi.com/
 a) Para que un usuario pueda hacer uso del sistema de recomendaciones debe
 registrarse y proporcionar los datos sobre sus gustos y preferencias acerca del
 género de películas que prefiere, actores y directores. También deberá registrar
-una lista de las películas que ha visto y que más le gustaron.
+una lista de las películas que ha visto y que más le gustaron.<br/>
 b) El usuario registrado y verificado podrá realizar búsquedas de películas por:
-nombre, actor, género o palabras claves.
+nombre, actor, género o palabras claves.<br/>
 c) Una vez que el usuario se ha registrado, podrá ejecutar el sistema de
 recomendación, el cual le ofrecerá una lista de películas recomendados de
-acuerdo a sus preferencias registradas.
-Especificación técnica
+acuerdo a sus preferencias registradas.<br/>
+
+## Especificación técnica
 
 Como requisitos para la evaluación del curso será necesario cumplir con los siguientes
 requerimientos de implementación.
@@ -28,13 +30,13 @@ el soporte que ofrece a través de JAX-RS Web Services.
 datos MARIA DB en su versión más reciente. El diseño de la base de datos para el
 registro de usuarios deberá considerar los siguientes datos:
 
-a) Usuario y contraseña para ingresar
-b) Nombre completo del usuario
-c) Edad y género
-d) Correo electrónico
-e) Género de películas
-f) Actores y directores favoritos
-g) Listado de los películas favoritas
+a) Usuario y contraseña para ingresar<br/>
+b) Nombre completo del usuario<br/>
+c) Edad y género<br/>
+d) Correo electrónico<br/>
+e) Género de películas<br/>
+f) Actores y directores favoritos<br/>
+g) Listado de los películas favoritas<br/>
 
 3. Para el diseño y despliegue de los servicios REST con acceso a la base de datos de
 usuarios se utilizará un servidor Web Apache Tomcat.
@@ -51,3 +53,31 @@ usuario así como las recomendaciones de películas.
 8. La aplicación Web correspondiente al cliente deberá consumir los servicios a través de
 la API-REST, para ello se podrán utilizar herramientas de consumo de servicios
 específicas de los lenguajes de los clientes.
+
+Para el desarrollo del proyecto se deberá considerar la arquitectura de la Figura 1.
+
+![picture alt](https://github.com/JoseAP89/RecomendacionPelis/blob/main/img/arqui_proj.png "diagrama")
+
+Figura 1. Arquitectura del sistema de recomendación y búsqueda de películas
+
+La arquitectura del sistema de recomendación de películas consistirá de las siguientes
+capas:
+
+1. La capa de aplicaciones cliente puede desarrollarse utilizando cualquier lenguaje
+de programación y entorno de desarrollo de aplicaciones. Esta aplicación deberá
+invocar a los servicios de registro y acceso de usuarios, de búsqueda y
+recomendación de películas.
+
+2. La capa de servicios deberá ofrecer las interfaces de programación (APIs REST)
+para el registro de usuarios, la búsqueda de películas y la generación de
+recomendaciones. Dentro de esta capa de servicios se deberán desarrollar tanto
+servicios para acceso y gestión a los datos de los usuarios, así como clientes de
+servicios a la base de datos de “Open Movie Database” para realizar búsquedas y
+para generar las recomendaciones de películas de acuerdo a las preferencias de
+los usuarios. Estos servicios y clientes REST deben estar basados en las APIs de
+JAX-RS Web Services de java.
+
+3. La capa de datos consistirá de una base de datos relacional “local” con los
+registros de los usuarios, mientras que la base de información de las películas se
+obtendrá de la “Open Movie Database”.
+
