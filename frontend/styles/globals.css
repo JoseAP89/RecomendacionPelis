@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  font-family: 'Indie Flower', cursive;
+}
+p {
+  font-family: 'Raleway', sans-serif;
+}
+* {
+  box-sizing: border-box;
+}
+
+.error-message  {
+  margin-top: 4px;
+  color:  #ed2939;
+}
+.error-message::before {
+  content: '• ';
+}
+
+.topnav{
+  background-color:#333;
+  height: 40px;
+  display: flex;
+  flex-direction: row;
+}
+.topnav a.tab-nav{
+  display: flex;
+  align-items: center;
+      
+}
+.topnav a.tab-nav {
+  color: white !important;
+  padding: 20px;
+  font-size: 20px;
+} 
+.topnav a.tab-nav:hover {
+  background-color: #778899;
+}
