@@ -4,8 +4,7 @@
 Diseñar y desarrollar un sistema de recomendación de películas utilizando el conjunto de
 API REST que ofrece la “Open Movie Database” en la siguiente liga:
 
-https://trakt.docs.apiary.io
-http://www.omdbapi.com/
+https://developers.themoviedb.org/3/ <br />
 
 ## Especificación de requerimientos funcionales
 
@@ -81,3 +80,7 @@ JAX-RS Web Services de java.
 registros de los usuarios, mientras que la base de información de las películas se
 obtendrá de la “Open Movie Database”.
 
+### Notas
+
+* Limite actual en la api es de 40 solicitudes cada 10 segundos y estan limitadas por dirección IP.
+* Métodos importantes: search, discover, movie
