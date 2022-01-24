@@ -80,6 +80,11 @@ JAX-RS Web Services de java.
 registros de los usuarios, mientras que la base de información de las películas se
 obtendrá de la “Open Movie Database”.
 
+## Modelo Entidad-Relación
+
+![picture alt](https://github.com/JoseAP89/RecomendacionPelis/blob/main/docs/Modelo_ER.png "ER")
+
+
 ### Notas
 
 * Limite actual en la api es de 40 solicitudes cada 10 segundos y estan limitadas por dirección IP.
