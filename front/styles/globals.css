@@ -53,10 +53,10 @@ p {
   grid-template-columns: 1fr 1fr 1fr;
 }
 
-.crear-cuenta {
+.enlace {
   color: dodgerblue;
 }
-.crear-cuenta:hover {
+.enlace:hover {
   cursor: pointer;
   color: aqua;
 }

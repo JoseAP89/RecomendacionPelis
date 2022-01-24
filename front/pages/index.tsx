@@ -2,11 +2,14 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 
 import { useEffect, useState } from 'react'
-import { Container, Form} from 'react-bootstrap'
+import { Container, Form, Button} from 'react-bootstrap'
+import { useForm } from "react-hook-form";
 
 
 const Index: NextPage = () => {
   const [cuenta, setCuenta] = useState<boolean>(true);
+  const { register: regConCuenta, handleSubmit: handleSubmitConCuenta, formState: { errors : errorsConCuenta} } = useForm();
+  const { register: regSinCuenta, handleSubmit: handleSubmitSinCuenta, formState: { errors : errorsSinCuenta} } = useForm();
 
 	useEffect(() => {
 		// remueve la barra de navegacion del DOM en la pantalla de iniciar sesión
@@ -16,6 +19,13 @@ const Index: NextPage = () => {
 		}
 	}, []);
 	
+  const onSubmitSinCuenta = (data: any) => {
+    console.log("data",data)
+  }
+
+  const onSubmitConCuenta = (data: any) => {
+    console.log("data",data)
+  }
 
   return (
     <>
@@ -31,69 +41,91 @@ const Index: NextPage = () => {
         <h3>Bienvenido!</h3>
           { cuenta &&
             <p style={{paddingBottom:"20px"}}>
-              Inicie sesión si ya tiene una cuenta, o <span className='crear-cuenta' onClick={() => setCuenta(!cuenta)}>cree una nueva</span>.
+              Inicie sesión si ya tiene una cuenta, o <span className='enlace' onClick={() => setCuenta(!cuenta)}>cree una nueva</span>.
             </p>
           }
           { !cuenta &&
             <p style={{paddingBottom:"20px"}}>
-              LLene sus datos para crear su cuenta, o <span className='crear-cuenta' onClick={() => setCuenta(!cuenta)}>inicie sesión </span>
+              LLene sus datos para crear su cuenta, o <span className='enlace' onClick={() => setCuenta(!cuenta)}>inicie sesión </span>
               si ya tiene una.
             </p>
           }
 
         { cuenta &&
-          <Form className='forma-iniciar-sesion mt-4' >
+          <Form className='forma-iniciar-sesion mt-4'  onSubmit={handleSubmitConCuenta(onSubmitConCuenta)}>
 
 
               <Form.Group className="mb-3 sesion-nombre" controlId="sesion-nombre">
-                <Form.Label>Nombre de usuario</Form.Label>
-                <Form.Control type="text" style={{width:"280px"}}/>
+                <Form.Label>Alias o correo electronico</Form.Label>
+                <Form.Control type="text" style={{width:"280px"}}
+                  {...regConCuenta("alias_correo", { required: true})}
+                />
               </Form.Group>
 
               <Form.Group className="mb-3 sesion-password" controlId="sesion-password">
                 <Form.Label>Contraseña</Form.Label>
-                <Form.Control type="password" style={{width:"280px"}} />
+                <Form.Control type="password" style={{width:"280px"}}
+                  {...regConCuenta("password", { required: true})}
+                />
               </Form.Group>
+
+              <Button  type="submit">Enviar</Button>
 
           </Form>
         }
 
         { !cuenta &&
-          <Form className='forma-crear-cuenta mt-4' >
+          <Form className='mt-4' onSubmit={handleSubmitSinCuenta(onSubmitSinCuenta)}>
+            <h4 className='my-4'>Datos de la cuenta</h4>
+            <div className='forma-crear-cuenta'>
 
               <Form.Group className="mb-3 input-sincuenta forma-nombre" controlId="forma-nombre">
                 <Form.Label>Nombre de usuario</Form.Label>
-                <Form.Control type="text" style={{width:"280px"}}/>
+                <Form.Control type="text" style={{width:"280px"}}
+                  {...regSinCuenta("nombre", { required: true})}
+                />
               </Form.Group>
 
-              <Form.Group className="mb-3 input-sincuenta forma-apellidop" controlId="forma-apellidop">
+              <Form.Group className="mb-3 input-sincuenta apellido1" controlId="apellido1">
                 <Form.Label>Apellido Paterno</Form.Label>
-                <Form.Control type="text" style={{width:"280px"}}/>
+                <Form.Control type="text" style={{width:"280px"}}
+                  {...regSinCuenta("apellido1", { required: true})}
+                />
               </Form.Group>
 
-              <Form.Group className="mb-3 input-sincuenta forma-apellidom" controlId="forma-apellidom">
+              <Form.Group className="mb-3 input-sincuenta apellido2" controlId="apellido2">
                 <Form.Label>Apellido Materno</Form.Label>
-                <Form.Control type="text" style={{width:"280px"}}/>
+                <Form.Control type="text" style={{width:"280px"}}
+                  {...regSinCuenta("apellido2", { required: true})}
+                />
               </Form.Group>
 
               <Form.Group className="mb-3 input-sincuenta forma-correo" controlId="forma-correo">
                 <Form.Label>Correo</Form.Label>
-                <Form.Control type="email" style={{width:"280px"}}/>
+                <Form.Control type="email" style={{width:"280px"}}
+                  {...regSinCuenta("email", { required: true})}
+                />
               </Form.Group>
 
               <Form.Group className="mb-3 input-sincuenta forma-alias" controlId="forma-alias">
                 <Form.Label>Alias</Form.Label>
-                <Form.Control type="text" style={{width:"280px"}}/>
+                <Form.Control type="text" style={{width:"280px"}}
+                  {...regSinCuenta("alias", { required: true})}
+                />
               </Form.Group>
 
               <Form.Group className="mb-3 input-sincuenta forma-edad" controlId="forma-edad">
                 <Form.Label>Edad</Form.Label>
-                <Form.Control type="number" style={{width:"280px"}} step="1" min="0" max="99"/>
+                <Form.Control type="number" style={{width:"280px"}} step="1" min="0" max="99"
+                  {...regSinCuenta("edad", { required: true, pattern: /^[0-9]+$/i })}
+                />
               </Form.Group>
 
               <Form.Group className="mb-3 input-sincuenta forma-edad" controlId="forma-genero">
                 <Form.Label>Género</Form.Label>
-                <Form.Select aria-label="Default select example" style={{width:"280px"}}>
+                <Form.Select aria-label="Default select example" style={{width:"280px"}}
+                  {...regSinCuenta("genero", { required: true})}
+                >
                   <option>Selecciona una opción</option>
                   <option value="F">Femenino</option>
                   <option value="M">Masculino</option>
@@ -102,13 +134,25 @@ const Index: NextPage = () => {
 
               <Form.Group className="mb-3 input-sincuenta forma-password1" controlId="forma-password1">
                 <Form.Label>Contraseña</Form.Label>
-                <Form.Control type="password" style={{width:"280px"}} />
+                <Form.Control type="password" style={{width:"280px"}} 
+                  {...regSinCuenta("password1", { required: true})}
+                />
               </Form.Group>
 
               <Form.Group className="mb-3 input-sincuenta forma-password2" controlId="forma-password2">
                 <Form.Label>Confirmar Contraseña</Form.Label>
-                <Form.Control type="password" style={{width:"280px"}} />
+                <Form.Control type="password" style={{width:"280px"}}
+                  {...regSinCuenta("password2", { required: true})}
+                />
               </Form.Group>
+            </div>
+
+            <hr />
+
+            <h4 className='my-4'>Preferencias</h4>
+
+            <Button  type="submit">Enviar</Button>
+
           </Form>
         }
 

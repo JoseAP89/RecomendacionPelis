@@ -10,6 +10,7 @@ apellido2 varchar
 alias varchar
 edad int
 genero varchar
+email varchar
 password varchar
 creado Date
 modificado Date
@@ -65,5 +66,6 @@ tipo_recomendacion_id int pk
 nombre
 creado Date
 modificado Date
+
 
 
