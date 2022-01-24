@@ -1,5 +1,6 @@
 import {StyledNavBar} from './Styled'
 import Link from 'next/link'
+import { useEffect } from 'react';
 
 interface NavigationElement {
   title: string;
@@ -7,6 +8,8 @@ interface NavigationElement {
 }
 
 const NavigationBar = () => {
+
+	
 	const menuList : Array<NavigationElement> = [
 	    { title: "Inicio", url: "/"},
 	    { title: "Alta", url: "/signup"},
@@ -16,7 +19,7 @@ const NavigationBar = () => {
 
 	return (
 		<StyledNavBar>
-	        <div className="topnav">
+	        <div id="topnav">
 	          { menuList.map( (m,i) =>{
 	              return (
 	              	<Link href={m.url} key={i}>

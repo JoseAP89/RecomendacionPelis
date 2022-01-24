@@ -1,6 +1,5 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { Alert, AlertIcon, Heading } from '@chakra-ui/react'
 import { useForm } from "react-hook-form";
 import Account from '../models/account';
 import TransactionService from '../services/transaction'
@@ -9,10 +8,7 @@ import Link from 'next/link'
 //import {CheckCircleIcon} from '@chakra-ui/icons'
 
 import { useEffect, useState } from 'react'
-import { Container, FormControl,FormLabel,Input,FormHelperText,
-  Button, FormErrorMessage
-} from '@chakra-ui/react'
-
+import { Container, Form} from 'react-bootstrap'
 
 const OpenSavingsAccount: NextPage = () => {
   const [successMsg, setSuccessMsg] = useState<boolean>(false);
@@ -52,17 +48,23 @@ const OpenSavingsAccount: NextPage = () => {
       </Head>
       
 
-      <Container p={5} maxW='container.xl'>
-        <Heading as="h2" size="md">Crea una cuenta de ahorro en unos pocos pasos.</Heading>
+      <Container className='p-5'>
+        <div style={{fontSize:"22px"}}>Crea una cuenta de ahorro en unos pocos pasos.</div>
 
         <p>Como requisito se necesita ser cliente de la institucion.</p>
         <p>
           Si aun no lo eres <Link href="/signup"><a style={{color:"blue"}}>click aqui</a></Link> para volverte nuestro cliente.
         </p>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl mt={4}  >
+        <Form className='mt-4'  onSubmit={handleSubmit(onSubmit)}>
 
+
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control type="email" placeholder="name@example.com" />
+            </Form.Group>
+
+            {/*
             <FormLabel htmlFor='clientid'>Número de Identificación</FormLabel>
             <Input id='clientid' type='number'  w="45vw" 
               {...register("clientid", { required: true, pattern: /^[0-9]+$/i })}
@@ -103,7 +105,6 @@ const OpenSavingsAccount: NextPage = () => {
 
             <Button colorScheme='blue' my={3} type="submit">Enviar</Button>
           </FormControl>
-        </form>
 
         { successMsg &&
           <Alert status='success'>
@@ -117,6 +118,9 @@ const OpenSavingsAccount: NextPage = () => {
             Hubo un problema guardando su información.
           </Alert>
         }
+
+      */}
+        </Form>
 
       </Container>
 

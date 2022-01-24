@@ -47,3 +47,16 @@ p {
 .topnav a.tab-nav:hover {
   background-color: #778899;
 }
+
+.forma-crear-cuenta{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.crear-cuenta {
+  color: dodgerblue;
+}
+.crear-cuenta:hover {
+  cursor: pointer;
+  color: aqua;
+}

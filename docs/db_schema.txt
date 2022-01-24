@@ -1,6 +1,5 @@
 # https://app.quickdatabasediagrams.com/#/
 
-# https://app.quickdatabasediagrams.com/#/
 
 usuario
 ---
