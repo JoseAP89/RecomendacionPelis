@@ -3,13 +3,25 @@ import Head from 'next/head'
 
 import { useEffect, useState } from 'react'
 import { Container, Form, Button} from 'react-bootstrap'
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import Dupla from '../models/dupla';
+import TransactionService from '../services/transaction';
+import Select, { StylesConfig } from 'react-select';
 
 
 const Index: NextPage = () => {
   const [cuenta, setCuenta] = useState<boolean>(true);
   const { register: regConCuenta, handleSubmit: handleSubmitConCuenta, formState: { errors : errorsConCuenta} } = useForm();
-  const { register: regSinCuenta, handleSubmit: handleSubmitSinCuenta, formState: { errors : errorsSinCuenta} } = useForm();
+  const { control,register: regSinCuenta, handleSubmit: handleSubmitSinCuenta, formState: { errors : errorsSinCuenta} } = useForm();
+  const [generos, setGeneros] = useState<Array<Dupla>>([]);
+
+  // busqueda actores
+  const [searchActor, setSearchActor] = useState<string|null>(null);
+  const [actores, setActores] = useState<Array<Dupla>>([]);
+
+  // busqueda directores
+  const [searchDir, setSearchDir] = useState<string|null>(null);
+  const [dir, setDir] = useState<Array<Dupla>>([]);
 
 	useEffect(() => {
 		// remueve la barra de navegacion del DOM en la pantalla de iniciar sesión
@@ -17,15 +29,47 @@ const Index: NextPage = () => {
 		if (!!nav) {
 			nav.remove();	
 		}
+    if (generos.length==0) {
+      TransactionService.getGeneros().then((resp) =>{
+        setGeneros(resp.data);
+      }).catch((error)=>{
+        console.log(error);
+      });
+    }
 	}, []);
 	
   const onSubmitSinCuenta = (data: any) => {
+    data.genero_favorito = generos.map(x => x.id+"#"+ x.name).find(x => x.split("#")[0] == data.genero_favorito);
+    data.actor_favorito = data.actor_favorito.value + "#" + data.actor_favorito.label ;
+    data.dir_favorito = data.dir_favorito.value + "#" + data.dir_favorito.label ;
     console.log("data",data)
   }
 
   const onSubmitConCuenta = (data: any) => {
     console.log("data",data)
   }
+
+  useEffect(() => {
+    if (searchActor!=null) {
+      TransactionService.getPersonas(searchActor).then((resp) =>{
+          setActores(resp.data);
+        }).catch((error)=>{
+          console.log(error);
+        });
+    }
+  }, [searchActor]);
+  
+  useEffect(() => {
+    if (searchDir!=null) {
+      TransactionService.getPersonas(searchDir).then((resp) =>{
+          setDir(resp.data);
+        }).catch((error)=>{
+          console.log(error);
+        });
+    }
+  }, [searchDir]);
+  
+
 
   return (
     <>
@@ -35,8 +79,9 @@ const Index: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       
+      <div id='canvas'></div>
 
-      <Container className='p-5' >
+      <Container id='form-container' className='p-5'>
       
         <h3>Bienvenido!</h3>
           { cuenta &&
@@ -149,9 +194,87 @@ const Index: NextPage = () => {
 
             <hr />
 
-            <h4 className='my-4'>Preferencias</h4>
+            <h4 className='my-4'>Tus Preferencias cinéfilas</h4>
 
-            <Button  type="submit">Enviar</Button>
+            <div className='forma-crear-cuenta'>
+
+              <Form.Group className="mb-3 input-sincuenta pref-genero" controlId="pref-genero">
+                <Form.Label>Selecciona tú género favorito</Form.Label>
+                <Form.Select aria-label="Default select example" style={{width:"280px"}}
+                  {...regSinCuenta("genero_favorito", { required: true})}
+                >
+                  <option>Selecciona una opción</option>
+                  {
+                    generos.map((genero)=>{
+                      return <option key={genero.id} value={genero.id}>{genero.name}</option>
+                    })
+                  }
+                </Form.Select>
+              </Form.Group>
+
+              <Form.Group className="mb-3 input-sincuenta pref-genero" controlId="pref-genero">
+                <Form.Label>Selecciona tú actor favorito</Form.Label>
+                <Controller
+                  name="actor_favorito"
+                  control={control}
+                  render={({ field }) => 
+                    <Select 
+                      {...field} 
+                      onInputChange={(value)=> setSearchActor(value.replaceAll(/\s+/g,"+"))}
+                      className="select-react"
+                      isSearchable={true}
+                      options=
+                      {
+                        actores.map((persona: Dupla) =>{
+                          return {label:persona.name, value: persona.id}
+                        })
+                      }
+                      styles={{
+                        option: (provided, state) => ({
+                          ...provided,
+                          borderBottom: '1px dotted pink',
+                          color: state.isSelected ? 'white' : 'black',
+                          padding: 6,
+                        })
+                      }}
+                    />
+                  }
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3 input-sincuenta pref-genero" controlId="pref-genero">
+                <Form.Label>Selecciona tú director favorito</Form.Label>
+                <Controller
+                  name="dir_favorito"
+                  control={control}
+                  render={({ field }) => 
+                    <Select 
+                      {...field} 
+                      className="select-react"
+                      onInputChange={(value)=> setSearchDir(value.replaceAll(/\s+/g,"+"))}
+                      isSearchable={true}
+                      options=
+                      {
+                        dir.map((persona: Dupla) =>{
+                          return {label:persona.name, value: persona.id}
+                        })
+                      }
+                      styles={{
+                        option: (provided, state) => ({
+                          ...provided,
+                          borderBottom: '1px dotted pink',
+                          color: state.isSelected ? 'white' : 'black',
+                          padding: 6,
+                        })
+                      }}
+                    />
+                  }
+                />
+              </Form.Group>
+
+            </div>
+
+            <Button  className='my-4' type="submit">Enviar</Button>
 
           </Form>
         }

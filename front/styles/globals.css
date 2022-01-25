@@ -54,9 +54,29 @@ p {
 }
 
 .enlace {
-  color: dodgerblue;
+  color: #000099;
+  font-weight: bold;
 }
 .enlace:hover {
   cursor: pointer;
   color: aqua;
+}
+
+#canvas{
+  background-image:url('../public/images/movie-theater.jpg');
+  background-attachment:fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: absolute;
+  z-index: -1;
+  height: 100vh;
+  width: 100vw;
+} 
+
+#form-container {
+  color: rgb(230, 230, 230);
+}
+
+.select-react {
+  width: 70%;
 }

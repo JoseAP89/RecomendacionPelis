@@ -1,17 +1,14 @@
-import Client from "../models/client"
-import Account from "../models/account"
 import axios from 'axios';
-import OperationReport from "../models/operationreport";
+import Genero from '../models/dupla';
 
 const TransactionService = {
-    createClient,
-    createAccount,
-    updateAccount,
-    getOperationReport
+    getGeneros,
+    getPersonas
 }
 
-const backendsrc = "https://localhost:8080"
+const backendsrc = "http://localhost:8080"
 
+/*
 async function createClient(data: Client): Promise<any>{
     const url = `${backendsrc}/api/BankOps/client`;
     // Default options are marked with *
@@ -32,11 +29,17 @@ async function updateAccount(data: Account): Promise<any>{
     console.log(data);
     return axios.put(url,data);
 }
-
-async function getOperationReport(clientid: number, accountid: number): Promise<any>{
-    const url = `${backendsrc}/api/BankOps/movements/${clientid}/${accountid}`;
+*/
+async function getGeneros(): Promise<any>{
+    const url = `${backendsrc}/api/generos`;
     // Default options are marked with *
     return axios.get(url);
+}
+
+async function getPersonas(persona: string): Promise<any>{
+    const url = `${backendsrc}/api/personas`;
+    // Default options are marked with *
+    return axios.get(url, {params:{name:persona}});
 }
 
 export default TransactionService;
