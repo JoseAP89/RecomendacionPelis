@@ -2,12 +2,12 @@ package com.back.Models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Genero {
+public class Dupla {
 
     private Long id;
     private String name;
 
-    public Genero() {
+    public Dupla() {
     }
 
     public String getName() {

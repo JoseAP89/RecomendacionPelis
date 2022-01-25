@@ -3,18 +3,18 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GeneroContainer {
-    private List<Dupla> genres;
+public class PersonaContainer {
+    private List<Dupla> results;
 
-    public List<Dupla> getGenres() {
-        return genres;
+    public List<Dupla> getResults() {
+        return results;
     }
 
     @Override
     public String toString() {
         StringBuilder data = new StringBuilder();
-        for (Dupla genero : genres) {
-            data.append(genero.toString() + ",\n");
+        for (Dupla persona : results) {
+            data.append(persona.toString() + ",\n");
         }
         return data.toString();
     }
