@@ -84,6 +84,9 @@ obtendrá de la “Open Movie Database”.
 
 ![picture alt](https://github.com/JoseAP89/RecomendacionPelis/blob/main/docs/Modelo_ER.png "ER")
 
+## Pantalla de Inicio
+
+![picture alt](https://github.com/JoseAP89/RecomendacionPelis/blob/main/img/pantalla_inicio.png "inicio")
 
 ### Notas
 
