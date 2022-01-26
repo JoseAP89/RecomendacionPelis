@@ -4,24 +4,35 @@ import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import { Container, Form, Button} from 'react-bootstrap'
 import { Controller, useForm } from "react-hook-form";
-import Dupla from '../models/dupla';
+import Box from '../models/box';
 import TransactionService from '../services/transaction';
 import Select, { StylesConfig } from 'react-select';
+import Usuario from '../models/usuario'
+import Cuenta from '../models/cuenta';
 
 
 const Index: NextPage = () => {
+
   const [cuenta, setCuenta] = useState<boolean>(true);
   const { register: regConCuenta, handleSubmit: handleSubmitConCuenta, formState: { errors : errorsConCuenta} } = useForm();
   const { control,register: regSinCuenta, handleSubmit: handleSubmitSinCuenta, formState: { errors : errorsSinCuenta} } = useForm();
-  const [generos, setGeneros] = useState<Array<Dupla>>([]);
+  const [generos, setGeneros] = useState<Array<Box>>([]);
 
   // busqueda actores
   const [searchActor, setSearchActor] = useState<string|null>(null);
-  const [actores, setActores] = useState<Array<Dupla>>([]);
+  const [actores, setActores] = useState<Array<Box>>([]);
 
   // busqueda directores
   const [searchDir, setSearchDir] = useState<string|null>(null);
-  const [dir, setDir] = useState<Array<Dupla>>([]);
+  const [dir, setDir] = useState<Array<Box>>([]);
+
+  // busqueda peliculas
+  const [searchPeli, setSearchPeli] = useState<string|null>(null);
+  const [peli, setPeli] = useState<Array<Box>>([]);
+
+  // chequeo de contraseñas
+  const [password1, setPassword1] = useState<string>("");
+  const [password2, setPassword2] = useState<string>("");
 
 	useEffect(() => {
 		// remueve la barra de navegacion del DOM en la pantalla de iniciar sesión
@@ -38,19 +49,9 @@ const Index: NextPage = () => {
     }
 	}, []);
 	
-  const onSubmitSinCuenta = (data: any) => {
-    data.genero_favorito = generos.map(x => x.id+"#"+ x.name).find(x => x.split("#")[0] == data.genero_favorito);
-    data.actor_favorito = data.actor_favorito.value + "#" + data.actor_favorito.label ;
-    data.dir_favorito = data.dir_favorito.value + "#" + data.dir_favorito.label ;
-    console.log("data",data)
-  }
-
-  const onSubmitConCuenta = (data: any) => {
-    console.log("data",data)
-  }
-
   useEffect(() => {
     if (searchActor!=null) {
+      // busca los actores desde la api
       TransactionService.getPersonas(searchActor).then((resp) =>{
           setActores(resp.data);
         }).catch((error)=>{
@@ -61,6 +62,7 @@ const Index: NextPage = () => {
   
   useEffect(() => {
     if (searchDir!=null) {
+      // busca los directores desde la api
       TransactionService.getPersonas(searchDir).then((resp) =>{
           setDir(resp.data);
         }).catch((error)=>{
@@ -69,7 +71,55 @@ const Index: NextPage = () => {
     }
   }, [searchDir]);
   
+  useEffect(() => {
+    if (searchPeli!=null) {
+      // busca las peliculas desde la api
+      TransactionService.getPeliculas(searchPeli).then((resp) =>{
+          setPeli(resp.data);
+        }).catch((error)=>{
+          console.log(error);
+        });
+    }
+  }, [searchPeli]);
+  
+  const onSubmitSinCuenta = (data: any) => {
+    // se integran el contenido de la dupla para mandarse en un solo parametro al back, formato: xxxx#yyyyy
+    data.genero_favorito = generos.map(x => x.id+"#"+ x.name).find(x => x.split("#")[0] == data.genero_favorito);
+    if (!!data.actor_favorito) {
+      data.actor_favorito = data.actor_favorito.value + "#" + data.actor_favorito.label ;
+    }
+    if (!!data.dir_favorito) {
+      data.dir_favorito = data.dir_favorito.value + "#" + data.dir_favorito.label ;
+    }
+    if (!!data.peli_favorita) {
+      data.peli_favorita = data.peli_favorita.value + "#" + data.peli_favorita.label ;
+    }
+    let usuario : Usuario = {
+      nombre : data.nombre,
+      apellido1: data.apellido1,
+      apellido2: data.apellido2,
+      correo: data.correo,
+      alias: data.alias,
+      edad: data.edad,
+      genero: data.genero,
+      password: data.password1,
+      dir_favorito: data.dir_favorito,
+      actor_favorito: data.actor_favorito,
+      genero_favorito: data.genero_favorito,
+      peli_favorita: data.peli_favorita
+    };
+    console.log("usuario nuevo:",usuario);
+    console.log("reg", errorsSinCuenta);
+  }
 
+
+  const onSubmitConCuenta = (data: any) => {
+    let cuenta : Cuenta = {
+      alias_correo: data.alias_correo,
+      password: data.correo
+    }
+    console.log("data",cuenta);
+  }
 
   return (
     <>
@@ -141,14 +191,14 @@ const Index: NextPage = () => {
               <Form.Group className="mb-3 input-sincuenta apellido2" controlId="apellido2">
                 <Form.Label>Apellido Materno</Form.Label>
                 <Form.Control type="text" style={{width:"280px"}}
-                  {...regSinCuenta("apellido2", { required: true})}
+                  {...regSinCuenta("apellido2")}
                 />
               </Form.Group>
 
               <Form.Group className="mb-3 input-sincuenta forma-correo" controlId="forma-correo">
                 <Form.Label>Correo</Form.Label>
                 <Form.Control type="email" style={{width:"280px"}}
-                  {...regSinCuenta("email", { required: true})}
+                  {...regSinCuenta("correo", { required: true})}
                 />
               </Form.Group>
 
@@ -162,14 +212,14 @@ const Index: NextPage = () => {
               <Form.Group className="mb-3 input-sincuenta forma-edad" controlId="forma-edad">
                 <Form.Label>Edad</Form.Label>
                 <Form.Control type="number" style={{width:"280px"}} step="1" min="0" max="99"
-                  {...regSinCuenta("edad", { required: true, pattern: /^[0-9]+$/i })}
+                  {...regSinCuenta("edad")}
                 />
               </Form.Group>
 
               <Form.Group className="mb-3 input-sincuenta forma-edad" controlId="forma-genero">
                 <Form.Label>Género</Form.Label>
                 <Form.Select aria-label="Default select example" style={{width:"280px"}}
-                  {...regSinCuenta("genero", { required: true})}
+                  {...regSinCuenta("genero")}
                 >
                   <option>Selecciona una opción</option>
                   <option value="F">Femenino</option>
@@ -179,15 +229,19 @@ const Index: NextPage = () => {
 
               <Form.Group className="mb-3 input-sincuenta forma-password1" controlId="forma-password1">
                 <Form.Label>Contraseña</Form.Label>
-                <Form.Control type="password" style={{width:"280px"}} 
+                <Form.Control type="password" style={{width:"280px", 
+                  border: (password1!=password2 && !!password1 && !!password2?"4px solid #ff3333":"")}} 
                   {...regSinCuenta("password1", { required: true})}
+                  onKeyUp={(data: any)=> {setPassword1(data.target.value)}}
                 />
               </Form.Group>
 
               <Form.Group className="mb-3 input-sincuenta forma-password2" controlId="forma-password2">
                 <Form.Label>Confirmar Contraseña</Form.Label>
-                <Form.Control type="password" style={{width:"280px"}}
+                <Form.Control type="password" style={{width:"280px",
+                  border: (password1!=password2 && !!password1 && !!password2?"4px solid #ff3333":"")}} 
                   {...regSinCuenta("password2", { required: true})}
+                  onKeyUp={(data: any)=> {setPassword2(data.target.value)}}
                 />
               </Form.Group>
             </div>
@@ -225,7 +279,7 @@ const Index: NextPage = () => {
                       isSearchable={true}
                       options=
                       {
-                        actores.map((persona: Dupla) =>{
+                        actores.map((persona: Box) =>{
                           return {label:persona.name, value: persona.id}
                         })
                       }
@@ -255,8 +309,38 @@ const Index: NextPage = () => {
                       isSearchable={true}
                       options=
                       {
-                        dir.map((persona: Dupla) =>{
+                        dir.map((persona: Box) =>{
                           return {label:persona.name, value: persona.id}
+                        })
+                      }
+                      styles={{
+                        option: (provided, state) => ({
+                          ...provided,
+                          borderBottom: '1px dotted pink',
+                          color: state.isSelected ? 'white' : 'black',
+                          padding: 6,
+                        })
+                      }}
+                    />
+                  }
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3 input-sincuenta pref-genero" controlId="pref-genero">
+                <Form.Label>Selecciona tú Pelicula favorito</Form.Label>
+                <Controller
+                  name="peli_favorita"
+                  control={control}
+                  render={({ field }) => 
+                    <Select 
+                      {...field} 
+                      className="select-react"
+                      onInputChange={(value)=> setSearchPeli(value.replaceAll(/\s+/g,"+"))}
+                      isSearchable={true}
+                      options=
+                      {
+                        peli.map((pelicula: Box) =>{
+                          return {label:pelicula.title, value: pelicula.id}
                         })
                       }
                       styles={{
@@ -274,7 +358,7 @@ const Index: NextPage = () => {
 
             </div>
 
-            <Button  className='my-4' type="submit">Enviar</Button>
+            <Button  className='my-4' type="submit" disabled={!(!!errorsSinCuenta && Object.keys(errorsSinCuenta).length == 0 && password1==password2)}>Enviar</Button>
 
           </Form>
         }

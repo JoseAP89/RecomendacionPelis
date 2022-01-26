@@ -1,9 +1,9 @@
 import axios from 'axios';
-import Genero from '../models/dupla';
 
 const TransactionService = {
     getGeneros,
-    getPersonas
+    getPersonas,
+    getPeliculas
 }
 
 const backendsrc = "http://localhost:8080"
@@ -40,6 +40,12 @@ async function getPersonas(persona: string): Promise<any>{
     const url = `${backendsrc}/api/personas`;
     // Default options are marked with *
     return axios.get(url, {params:{name:persona}});
+}
+
+async function getPeliculas(title: string): Promise<any>{
+    const url = `${backendsrc}/api/peliculas`;
+    // Default options are marked with *
+    return axios.get(url, {params:{title}});
 }
 
 export default TransactionService;
