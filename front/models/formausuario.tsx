@@ -1,11 +1,10 @@
-export default interface Usuario {
-    usuario_id? : string,
+export default interface FormaUsuario {
     nombre : string,
     apellido1 : string,
     apellido2? : string,
     alias : string,
     correo : string,
-    edad? : number,
+    edad? : string,
     genero : string,
     password : string,
     genero_favorito: string,

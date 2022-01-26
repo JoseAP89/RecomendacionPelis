@@ -12,7 +12,7 @@ CREATE TABLE usuario (
     alias varchar(250) not null,
     edad int,
     genero varchar(1),
-    email varchar(100) not null,
+    correo varchar(100) not null,
     password varchar(100) not null,
     creado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     modificado TIMESTAMP 

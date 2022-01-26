@@ -2,12 +2,12 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 
 import { useEffect, useState } from 'react'
-import { Container, Form, Button} from 'react-bootstrap'
+import { Container, Form, Button, Alert} from 'react-bootstrap'
 import { Controller, useForm } from "react-hook-form";
 import Box from '../models/box';
 import TransactionService from '../services/transaction';
-import Select, { StylesConfig } from 'react-select';
-import Usuario from '../models/usuario'
+import Select from 'react-select';
+import FormaUsuario from '../models/formausuario'
 import Cuenta from '../models/cuenta';
 
 
@@ -15,8 +15,9 @@ const Index: NextPage = () => {
 
   const [cuenta, setCuenta] = useState<boolean>(true);
   const { register: regConCuenta, handleSubmit: handleSubmitConCuenta, formState: { errors : errorsConCuenta} } = useForm();
-  const { control,register: regSinCuenta, handleSubmit: handleSubmitSinCuenta, formState: { errors : errorsSinCuenta} } = useForm();
+  const { reset, control,register: regSinCuenta, handleSubmit: handleSubmitSinCuenta, formState: { errors : errorsSinCuenta} } = useForm();
   const [generos, setGeneros] = useState<Array<Box>>([]);
+  const [formaUsuario, setFormaUsuario] = useState<FormaUsuario>();
 
   // busqueda actores
   const [searchActor, setSearchActor] = useState<string|null>(null);
@@ -33,6 +34,9 @@ const Index: NextPage = () => {
   // chequeo de contraseñas
   const [password1, setPassword1] = useState<string>("");
   const [password2, setPassword2] = useState<string>("");
+
+  // alertas en el post de agregar usuario, si positivo mensaje de exito, si neg mensaje de error, si null no se muestra nada
+  const [postUsuarioStatus, setPostUsuarioStatus] = useState<boolean|null>(null);
 
 	useEffect(() => {
 		// remueve la barra de navegacion del DOM en la pantalla de iniciar sesión
@@ -94,7 +98,7 @@ const Index: NextPage = () => {
     if (!!data.peli_favorita) {
       data.peli_favorita = data.peli_favorita.value + "#" + data.peli_favorita.label ;
     }
-    let usuario : Usuario = {
+    let usuario : FormaUsuario = {
       nombre : data.nombre,
       apellido1: data.apellido1,
       apellido2: data.apellido2,
@@ -110,6 +114,16 @@ const Index: NextPage = () => {
     };
     console.log("usuario nuevo:",usuario);
     console.log("reg", errorsSinCuenta);
+    TransactionService.addUsuario(usuario).then((res) => {
+        setPostUsuarioStatus(true);
+        reset();
+    }).catch((err) => {
+        setPostUsuarioStatus(false);
+    }).finally(()=>{
+      setTimeout(() => {
+        setPostUsuarioStatus(null);
+      }, 1_000 * 5);
+    })
   }
 
 
@@ -361,6 +375,17 @@ const Index: NextPage = () => {
             <Button  className='my-4' type="submit" disabled={!(!!errorsSinCuenta && Object.keys(errorsSinCuenta).length == 0 && password1==password2)}>Enviar</Button>
 
           </Form>
+        }
+
+        { postUsuarioStatus === true && 
+          <Alert  variant="success">
+            <p>El usuario {formaUsuario?.nombre.toUpperCase()} ha sido creado correctamente.</p>
+          </Alert>
+        }
+        { postUsuarioStatus === false && 
+          <Alert  variant="danger">
+            <p>Ha habido un error creando su usuario.</p>
+          </Alert>
         }
 
       </Container>
