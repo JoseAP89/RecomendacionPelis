@@ -3,17 +3,17 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PersonaContainer {
-    private List<Dupla> results;
+public class ResultadoContainer {
+    private List<Box> results;
 
-    public List<Dupla> getResults() {
+    public List<Box> getResults() {
         return results;
     }
 
     @Override
     public String toString() {
         StringBuilder data = new StringBuilder();
-        for (Dupla persona : results) {
+        for (Box persona : results) {
             data.append(persona.toString() + ",\n");
         }
         return data.toString();

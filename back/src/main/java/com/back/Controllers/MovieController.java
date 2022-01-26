@@ -6,11 +6,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -20,6 +18,7 @@ import java.net.URL;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.back.Models.*;
 
@@ -45,10 +44,10 @@ public class MovieController {
     }
 
     @GetMapping(path="/generos")
-    public @ResponseBody Iterable<Dupla> getGeneros() {
+    public @ResponseBody Iterable<Box> getGeneros() {
         // This returns a JSON or XML with the users
         URL url = null;
-        List<Dupla> generos = new ArrayList<>();
+        List<Box> generos = new ArrayList<>();
         try {
             url = new URL(String.format("https://api.themoviedb.org/3/genre/movie/list?api_key=%s&language=es-MX", apy_key));
             GeneroContainer container = objectMapper.readValue(url, GeneroContainer.class);
@@ -70,17 +69,20 @@ public class MovieController {
     }
 
     @GetMapping(path="/personas")
-    public @ResponseBody Iterable<Dupla> getPersonas(@RequestParam String name) {
+    public @ResponseBody Iterable<Box> getPersonas(@RequestParam String name) {
         // This returns a JSON or XML with the users
         URL url = null;
         int max_personas = 15;
         String src = String.format("https://api.themoviedb.org/3/search/person?api_key=%s&language=es-MX&query=%s&page=1&include_adult=false",apy_key, name.trim());
         System.out.println(src);
-        List<Dupla> personas = new ArrayList<>();
+        List<Box> personas = new ArrayList<>();
         try {
             url = new URL(src);
-            PersonaContainer container = objectMapper.readValue(url, PersonaContainer.class);
-            personas = container.getResults(); 
+            ResultadoContainer container = objectMapper.readValue(url, ResultadoContainer.class);
+            personas = container.getResults()
+                .stream()
+                .distinct()
+                .collect(Collectors.toList()); 
             while (personas.size()>max_personas) {
                 personas.remove(personas.size()-1);
             }
@@ -100,4 +102,40 @@ public class MovieController {
         }
         return personas;
     }
+
+    @GetMapping(path="/peliculas")
+    public @ResponseBody Iterable<Box> getPeliculas(@RequestParam String title) {
+        // This returns a JSON or XML with the users
+        URL url = null;
+        int max_pelis = 15;
+        String src = String.format("https://api.themoviedb.org/3/search/movie?api_key=%s&language=es-MX&query=%s&page=1&include_adult=false",apy_key, title.trim());
+        System.out.println(src);
+        List<Box> peliculas = new ArrayList<>();
+        try {
+            url = new URL(src);
+            ResultadoContainer container = objectMapper.readValue(url, ResultadoContainer.class);
+            peliculas = container.getResults()
+                .stream()
+                .distinct()
+                .collect(Collectors.toList()); 
+            while (peliculas.size()>max_pelis) {
+                peliculas.remove(peliculas.size()-1);
+            }
+            System.out.println(container); 
+        } catch (MalformedURLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (StreamReadException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (DatabindException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return peliculas;
+    }
+
 }

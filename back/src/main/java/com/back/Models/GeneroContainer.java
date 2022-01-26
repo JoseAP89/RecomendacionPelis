@@ -4,16 +4,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GeneroContainer {
-    private List<Dupla> genres;
+    private List<Box> genres;
 
-    public List<Dupla> getGenres() {
+    public List<Box> getGenres() {
         return genres;
     }
 
     @Override
     public String toString() {
         StringBuilder data = new StringBuilder();
-        for (Dupla genero : genres) {
+        for (Box genero : genres) {
             data.append(genero.toString() + ",\n");
         }
         return data.toString();
