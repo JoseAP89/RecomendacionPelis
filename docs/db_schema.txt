@@ -15,38 +15,28 @@ password varchar
 creado Date
 modificado Date
 
-genero_favorito
+catalogo
 --
-genero_favorito_id int pk
-genero_api_id int
-usuario_id int fk >- usuario.usuario_id
+catalogo_id int pk
 nombre varchar
+descripcion varchar
 creado Date
 modificado Date
 
-actor_favorito
+favorito
 --
-actor_favorito_id int pk
-persona_api_id int
+favorito_id int pk
+api_id int
 usuario_id int fk >- usuario.usuario_id
 nombre_completo varchar
+catalogo_id int fk >- catalogo.catalogo_id
 creado Date
 modificado Date
 
-director_favorito
+recomendacion
 --
-director_favorito_id int pk
-persona_api_id int
-usuario_id int fk >- usuario.usuario_id
-nombre_completo varchar
-creado Date
-modificado Date
-
-pelicula_favorito
---
-pelicula_favorito_id int pk
+recomendacion_id int pk
 pelicula_api_id int
 usuario_id int fk >- usuario.usuario_id
-nombre_completo varchar
 creado Date
 modificado Date

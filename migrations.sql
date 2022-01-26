@@ -27,13 +27,14 @@ CREATE TABLE catalogo (
 );
 
 CREATE TABLE favorito (
-    favorito_id int primary key AUTO_INCREMENT,
-    api_id int not null unique,
-    usuario_id int,
+    favorito_id int AUTO_INCREMENT,
+    api_id int not null,
+    usuario_id int not null,
     nombre_completo varchar(250),
     catalogo_id int not null,
     creado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     modificado TIMESTAMP ,
+    PRIMARY KEY(favorito_id),
     FOREIGN KEY (usuario_id) REFERENCES usuario(usuario_id),
     FOREIGN KEY (catalogo_id) REFERENCES catalogo(catalogo_id)
 );
@@ -44,8 +45,7 @@ CREATE TABLE recomendacion (
     usuario_id int not null,
     creado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     modificado TIMESTAMP,
-    FOREIGN KEY (usuario_id) REFERENCES usuario(usuario_id),
-    FOREIGN KEY (pelicula_api_id) REFERENCES favorito(api_id)
+    FOREIGN KEY (usuario_id) REFERENCES usuario(usuario_id)
 );
 
 INSERT INTO catalogo(nombre, descripcion) VALUES
