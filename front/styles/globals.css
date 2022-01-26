@@ -80,3 +80,7 @@ p {
 .select-react {
   width: 70%;
 }
+
+.field-required {
+  color:red;
+}

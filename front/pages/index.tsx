@@ -165,14 +165,14 @@ const Index: NextPage = () => {
 
 
               <Form.Group className="mb-3 sesion-nombre" controlId="sesion-nombre">
-                <Form.Label>Alias o correo electronico</Form.Label>
+                <Form.Label>Alias o correo electronico <span className="field-required">*</span></Form.Label>
                 <Form.Control type="text" style={{width:"280px"}}
                   {...regConCuenta("alias_correo", { required: true})}
                 />
               </Form.Group>
 
               <Form.Group className="mb-3 sesion-password" controlId="sesion-password">
-                <Form.Label>Contraseña</Form.Label>
+                <Form.Label>Contraseña <span className="field-required">*</span></Form.Label>
                 <Form.Control type="password" style={{width:"280px"}}
                   {...regConCuenta("password", { required: true})}
                 />
@@ -189,14 +189,14 @@ const Index: NextPage = () => {
             <div className='forma-crear-cuenta'>
 
               <Form.Group className="mb-3 input-sincuenta forma-nombre" controlId="forma-nombre">
-                <Form.Label>Nombre de usuario</Form.Label>
+                <Form.Label>Nombre de usuario <span className="field-required">*</span></Form.Label>
                 <Form.Control type="text" style={{width:"280px"}}
                   {...regSinCuenta("nombre", { required: true})}
                 />
               </Form.Group>
 
               <Form.Group className="mb-3 input-sincuenta apellido1" controlId="apellido1">
-                <Form.Label>Apellido Paterno</Form.Label>
+                <Form.Label>Apellido Paterno <span className="field-required">*</span></Form.Label>
                 <Form.Control type="text" style={{width:"280px"}}
                   {...regSinCuenta("apellido1", { required: true})}
                 />
@@ -210,14 +210,14 @@ const Index: NextPage = () => {
               </Form.Group>
 
               <Form.Group className="mb-3 input-sincuenta forma-correo" controlId="forma-correo">
-                <Form.Label>Correo</Form.Label>
+                <Form.Label>Correo <span className="field-required">*</span></Form.Label>
                 <Form.Control type="email" style={{width:"280px"}}
                   {...regSinCuenta("correo", { required: true})}
                 />
               </Form.Group>
 
               <Form.Group className="mb-3 input-sincuenta forma-alias" controlId="forma-alias">
-                <Form.Label>Alias</Form.Label>
+                <Form.Label>Alias <span className="field-required">*</span></Form.Label>
                 <Form.Control type="text" style={{width:"280px"}}
                   {...regSinCuenta("alias", { required: true})}
                 />
@@ -242,7 +242,7 @@ const Index: NextPage = () => {
               </Form.Group>
 
               <Form.Group className="mb-3 input-sincuenta forma-password1" controlId="forma-password1">
-                <Form.Label>Contraseña</Form.Label>
+                <Form.Label>Contraseña <span className="field-required">*</span></Form.Label>
                 <Form.Control type="password" style={{width:"280px", 
                   border: (password1!=password2 && !!password1 && !!password2?"4px solid #ff3333":"")}} 
                   {...regSinCuenta("password1", { required: true})}
@@ -251,7 +251,7 @@ const Index: NextPage = () => {
               </Form.Group>
 
               <Form.Group className="mb-3 input-sincuenta forma-password2" controlId="forma-password2">
-                <Form.Label>Confirmar Contraseña</Form.Label>
+                <Form.Label>Confirmar Contraseña <span className="field-required">*</span></Form.Label>
                 <Form.Control type="password" style={{width:"280px",
                   border: (password1!=password2 && !!password1 && !!password2?"4px solid #ff3333":"")}} 
                   {...regSinCuenta("password2", { required: true})}
@@ -267,7 +267,7 @@ const Index: NextPage = () => {
             <div className='forma-crear-cuenta'>
 
               <Form.Group className="mb-3 input-sincuenta pref-genero" controlId="pref-genero">
-                <Form.Label>Selecciona tú género favorito</Form.Label>
+                <Form.Label>Selecciona tú género favorito <span className="field-required">*</span></Form.Label>
                 <Form.Select aria-label="Default select example" style={{width:"280px"}}
                   {...regSinCuenta("genero_favorito", { required: true})}
                 >
@@ -290,6 +290,8 @@ const Index: NextPage = () => {
                       {...field} 
                       onInputChange={(value)=> setSearchActor(value.replaceAll(/\s+/g,"+"))}
                       className="select-react"
+                      escapeClearsValue={true}
+                      isClearable={true}
                       isSearchable={true}
                       options=
                       {
@@ -321,6 +323,8 @@ const Index: NextPage = () => {
                       className="select-react"
                       onInputChange={(value)=> setSearchDir(value.replaceAll(/\s+/g,"+"))}
                       isSearchable={true}
+                      isClearable={true}
+                      escapeClearsValue={true}
                       options=
                       {
                         dir.map((persona: Box) =>{
@@ -351,6 +355,8 @@ const Index: NextPage = () => {
                       className="select-react"
                       onInputChange={(value)=> setSearchPeli(value.replaceAll(/\s+/g,"+"))}
                       isSearchable={true}
+                      isClearable={true}
+                      escapeClearsValue={true}
                       options=
                       {
                         peli.map((pelicula: Box) =>{
