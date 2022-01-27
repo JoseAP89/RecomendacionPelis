@@ -1,11 +1,13 @@
 import axios from 'axios';
+import Cuenta from '../models/cuenta';
 import FormaUsuario from '../models/formausuario';
 
 const TransactionService = {
     getGeneros,
     getPersonas,
     getPeliculas,
-    addUsuario
+    addUsuario,
+    checkUsuario
 }
 
 const backendsrc = "http://localhost:8080"
@@ -52,6 +54,12 @@ async function getPeliculas(title: string): Promise<any>{
 
 async function addUsuario(data: FormaUsuario): Promise<any>{
     const url = `${backendsrc}/api/usuario`;
+    // Default options are marked with *
+    return axios.post(url,data);
+}
+
+async function checkUsuario(data: Cuenta): Promise<any>{
+    const url = `${backendsrc}/api/usuario/access`;
     // Default options are marked with *
     return axios.post(url,data);
 }

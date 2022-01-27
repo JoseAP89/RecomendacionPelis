@@ -1,4 +1,5 @@
 package com.back.Controllers;
+import org.hibernate.annotations.SourceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -175,5 +176,17 @@ public class MovieController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("Ok");
     }
 
-
+    @CrossOrigin(origins = "http://localhost:3000", methods = RequestMethod.POST)
+    @PostMapping(path="/usuario/access") 
+    public ResponseEntity<String> checkUsuario (@RequestBody Cuenta forma){
+        System.out.println(forma.getAlias_correo() + "  " + forma.getPassword());
+        String query = String.format("select count(*) from usuario where (alias='%s' or correo='%s') and password='%s'", 
+                                        forma.getAlias_correo( ), forma.getAlias_correo( ), forma.getPassword( ));
+        int rowCount = this.database.queryForObject(query, Integer.class);
+        if (rowCount == 1) { // Existe un usuario que hace match 
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Ok");
+        }else{
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("No existe coincidencias, Favor de revisar Usuario o contraseña");
+        }
+    }
 }
