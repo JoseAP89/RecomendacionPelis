@@ -37,7 +37,7 @@ const Index: NextPage = () => {
 
   // alertas en el post de agregar usuario, si positivo mensaje de exito, si neg mensaje de error, si null no se muestra nada
   const [postUsuarioStatus, setPostUsuarioStatus] = useState<boolean|null>(null);
-
+  const [postUsuarioRegistradoStatus, setUsuarioRegistradoStatus] = useState<boolean|null>(null);
 	useEffect(() => {
 		// remueve la barra de navegacion del DOM en la pantalla de iniciar sesión
 		let nav : HTMLElement|null= document.querySelector("#topnav");
@@ -130,9 +130,18 @@ const Index: NextPage = () => {
   const onSubmitConCuenta = (data: any) => {
     let cuenta : Cuenta = {
       alias_correo: data.alias_correo,
-      password: data.correo
+      password: data.password
     }
     console.log("data",cuenta);
+    TransactionService.checkUsuario(cuenta).then((res) => {
+      setUsuarioRegistradoStatus(true);
+    }).catch((err) => {
+      setUsuarioRegistradoStatus(false);
+    }).finally(()=>{
+      setTimeout(() => {
+        setUsuarioRegistradoStatus(null);
+      }, 1_000 * 5);
+    })
   }
 
   return (
@@ -393,7 +402,16 @@ const Index: NextPage = () => {
             <p>Ha habido un error creando su usuario.</p>
           </Alert>
         }
-
+        { postUsuarioRegistradoStatus === true && 
+          <Alert  variant="success">
+          <p>Bienvenido</p>
+          </Alert>
+        }
+        { postUsuarioRegistradoStatus === false && 
+          <Alert  variant="danger">
+          <p>Error. Verifique su usuario y contraseña</p>
+          </Alert>
+        }
       </Container>
 
     </>
