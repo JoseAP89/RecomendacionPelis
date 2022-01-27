@@ -9,7 +9,7 @@ public class Cuenta {
         return this.alias_correo;
     }
 
-    public void getAlias_correo(String alias_correo){
+    public void setAlias_correo(String alias_correo){
         this.alias_correo = alias_correo;
     }
 

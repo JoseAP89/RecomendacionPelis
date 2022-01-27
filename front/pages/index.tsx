@@ -402,11 +402,6 @@ const Index: NextPage = () => {
             <p>Ha habido un error creando su usuario.</p>
           </Alert>
         }
-        { postUsuarioRegistradoStatus === true && 
-          <Alert  variant="success">
-          <p>Bienvenido</p>
-          </Alert>
-        }
         { postUsuarioRegistradoStatus === false && 
           <Alert  variant="danger">
           <p>Error. Verifique su usuario y contraseña</p>
