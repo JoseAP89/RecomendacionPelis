@@ -88,6 +88,28 @@ obtendrá de la “Open Movie Database”.
 
 ![picture alt](https://github.com/JoseAP89/RecomendacionPelis/blob/main/img/pantalla_inicio.png "inicio")
 
+## Requisitos
+Se deben tener los siguientes requerimientos:
+* Node.js
+* Maven 3.2+
+* JDK 1.8 o superior
+* Mysql
+
+## Puesta en marcha del proyecto en local
+
+Una vez clonado el proyecto en tu local se debe seguir los siguientes pasos:
+1. Cambiarse al front y ejecutar el comando para instalar las dependencias del proyecto de front y correr el cliente en modo desarrollo.
+  `$ npm install && npm run dev`
+3. Se debe crear una base de datos con el nombre peliculas.
+  `$ CREATE DATABASE testdb;`
+4. Crear un usuario para la base de datos que se llame 'movie' y tenga el password 'depelicula123'.
+  `$ create user 'movie'@'localhost' identified by 'depelicula123';`
+5. Otortgarle los privilegios necesitados al usuario sobre dicha base de datos.
+  `$  grant all privileges on peliculas.* to movie@localhost;` 
+6. Cambiarse a la carpeta back y ejecutar el siguiente comando para correr el servidor del back.
+  `$ ./mvnw spring-boot:run`
+7. Visitar la dirección localhost:3000 para revisar que la aplicación este funcionando correctamente.
+
 ### Notas
 
 * Limite actual en la api es de 40 solicitudes cada 10 segundos y estan limitadas por dirección IP.
