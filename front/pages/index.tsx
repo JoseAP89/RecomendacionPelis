@@ -290,10 +290,11 @@ const Index: NextPage = () => {
               </Form.Group>
 
               <Form.Group className="mb-3 input-sincuenta pref-genero" controlId="pref-genero">
-                <Form.Label>Selecciona tú actor favorito</Form.Label>
+                <Form.Label>Selecciona tú actor favorito <span className="field-required">*</Form.Label>
                 <Controller
                   name="actor_favorito"
                   control={control}
+		  rules={{ required: true }}
                   render={({ field }) => 
                     <Select 
                       {...field} 
@@ -322,10 +323,11 @@ const Index: NextPage = () => {
               </Form.Group>
 
               <Form.Group className="mb-3 input-sincuenta pref-genero" controlId="pref-genero">
-                <Form.Label>Selecciona tú director favorito</Form.Label>
+                <Form.Label>Selecciona tú director favorito <span className="field-required">*</Form.Label>
                 <Controller
                   name="dir_favorito"
                   control={control}
+		  rules={{ required: true }}
                   render={({ field }) => 
                     <Select 
                       {...field} 
@@ -354,10 +356,11 @@ const Index: NextPage = () => {
               </Form.Group>
 
               <Form.Group className="mb-3 input-sincuenta pref-genero" controlId="pref-genero">
-                <Form.Label>Selecciona tú Pelicula favorito</Form.Label>
+                <Form.Label>Selecciona tú Pelicula favorito <span className="field-required">*</Form.Label>
                 <Controller
                   name="peli_favorita"
                   control={control}
+		  rules={{ required: true }}
                   render={({ field }) => 
                     <Select 
                       {...field} 
