@@ -98,17 +98,17 @@ Se deben tener los siguientes requerimientos:
 ## Puesta en marcha del proyecto en local
 
 Una vez clonado el proyecto en tu local se debe seguir los siguientes pasos:
-1. Cambiarse al front y ejecutar el comando para instalar las dependencias del proyecto de front y correr el cliente en modo desarrollo.
+1. Cambiarse al front y ejecutar el comando para instalar las dependencias del proyecto de front y correr el cliente en modo desarrollo.<br/>
   `$ npm install && npm run dev`
-3. Se debe crear una base de datos con el nombre peliculas.
+3. Se debe crear una base de datos con el nombre peliculas.<br/>
   `$ CREATE DATABASE testdb;`
-4. Crear un usuario para la base de datos que se llame 'movie' y tenga el password 'depelicula123'.
+4. Crear un usuario para la base de datos que se llame 'movie' y tenga el password 'depelicula123'.<br/>
   `$ create user 'movie'@'localhost' identified by 'depelicula123';`
-5. Otortgarle los privilegios necesitados al usuario sobre dicha base de datos.
+5. Otortgarle los privilegios necesitados al usuario sobre dicha base de datos.<br/>
   `$  grant all privileges on peliculas.* to movie@localhost;` 
-6. Cambiarse a la carpeta back y ejecutar el siguiente comando para correr el servidor del back.
+6. Cambiarse a la carpeta back y ejecutar el siguiente comando para correr el servidor del back.<br/>
   `$ ./mvnw spring-boot:run`
-7. Visitar la dirección localhost:3000 para revisar que la aplicación este funcionando correctamente.
+7. Visitar la dirección localhost:3000 para revisar que la aplicación este funcionando correctamente.<br/>
 
 ### Notas
 
