@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 
 import { useEffect, useState } from 'react'
 import { Container} from 'react-bootstrap'
-import NavigationBar from '../components/NavigationBar/Index'
+import NavigationBar from '../components/NavigationBar'
 import TransactionService from '../services/transaction'
 
 

@@ -40,11 +40,6 @@ const Index: NextPage = () => {
   const [postUsuarioRegistradoStatus, setUsuarioRegistradoStatus] = useState<boolean|null>(null);
 
 	useEffect(() => {
-		// remueve la barra de navegacion del DOM en la pantalla de iniciar sesión
-		let nav : HTMLElement|null= document.querySelector("#topnav");
-		if (!!nav) {
-			nav.hidden = true;	
-		}
     if (generos.length==0) {
       TransactionService.getGeneros().then((resp) =>{
         setGeneros(resp.data);

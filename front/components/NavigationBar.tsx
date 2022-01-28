@@ -1,14 +1,9 @@
-import {StyledNavBar} from './Styled'
+import {StyledNavBar} from '../styles/styledComponents/Styled'
 import Link from 'next/link'
 import { useEffect } from 'react';
 import Head from 'next/head';
 import { Button } from 'react-bootstrap';
 import { useRouter } from 'next/router';
-
-interface NavigationElement {
-  title: string;
-  url: string;
-}
 
 const NavigationBar = () => {
   const router = useRouter()
