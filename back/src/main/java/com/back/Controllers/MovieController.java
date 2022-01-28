@@ -153,6 +153,35 @@ public class MovieController {
         return peliculas;
     }
 
+    @GetMapping(path="/peliculas/recomendacion")
+    public @ResponseBody Iterable<Box> getRecomendacion(@RequestParam String user_id) {
+        // This returns a JSON or XML with the users
+
+        String queary = String.format("select api_id from favorito where usuario_id='%s' and catalogo_id=2", user_id);
+        int api_id = this.database.quearyForObject(query, Integer.class);
+
+        String src = String.format("https://api.themoviedb.org/3/movie/%s/recommendations?api_key=%s&language=es-MX", api_id, api_key);
+        List<box> peliculas = new ArrayList< >( );
+        try {
+            url = new URL(src);
+            ResultadoContainer container = objectMapper.readValue(url, ResultadoContainer.class);
+            peliculas = container.getResults()
+                .stream()
+                .distinct()
+                .collect(Collectors.toList());
+            Collections.shuffle(peliculas);
+            const maxPelis = 15;
+            while (peliculas.size() > maxPelis) {
+                peliculas.remove(peliculas.size() - 1);
+            }
+            System.out.println(container); 
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return peliculas;
+    }
+
     @CrossOrigin(origins = "http://localhost:3000", methods = RequestMethod.POST)
     @PostMapping(path="/usuario") 
     public ResponseEntity<String> addUsuario (@RequestBody FormaUsuario forma){

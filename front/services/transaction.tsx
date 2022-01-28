@@ -6,6 +6,7 @@ const TransactionService = {
     getGeneros,
     getPersonas,
     getPeliculas,
+    getRecomendacion,
     addUsuario,
     checkUsuario
 }
@@ -51,7 +52,11 @@ async function getPeliculas(title: string): Promise<any>{
     // Default options are marked with *
     return axios.get(url, {params:{title}});
 }
-
+async function getRecomendacion(user_id: string): Promise<any>{
+    const url = `${backendsrc}/api/peliculas/recomendacion`;
+    // Default options are marked with *
+    return axios.get(url, {params: {user_id}});
+}
 async function addUsuario(data: FormaUsuario): Promise<any>{
     const url = `${backendsrc}/api/usuario`;
     // Default options are marked with *
