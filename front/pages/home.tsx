@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { Container} from 'react-bootstrap'
 import NavigationBar from '../components/NavigationBar'
+import FormaUsuario from '../models/formausuario'
 import TransactionService from '../services/transaction'
 
 
@@ -12,6 +13,7 @@ const Home: NextPage = () => {
 
   const router = useRouter()
   const [alias, setAlias] = useState<string>("");
+  const [usuario, setUsuario] = useState<FormaUsuario>();
 
   useEffect(() => {
     let token : string = sessionStorage.getItem("token") || "";
@@ -24,6 +26,12 @@ const Home: NextPage = () => {
       setAlias(res.data);
     }).catch( () => { // token erroneo, acceso ilegal, regresarse a la pantalla de inicio de sesión
       router.push('/');
+    });
+    TransactionService.getUsuario(token).then((res) => {
+      setUsuario(res.data);
+      console.log("usuario:",res.data);
+    }).catch( (error) => { // token erroneo, acceso ilegal, regresarse a la pantalla de inicio de sesión
+      console.log("error:",error);
     });
   }, []);
 
@@ -44,7 +52,7 @@ const Home: NextPage = () => {
         <script src="https://kit.fontawesome.com/1348fe1b4f.js" crossOrigin="anonymous" async></script>
       </Head>
       
-      <NavigationBar/>
+      <NavigationBar usuario={usuario}/>
       <Container className='p-5' >
       
         <h3>Bienvenido!</h3>

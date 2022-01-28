@@ -153,6 +153,32 @@ public class MovieController {
         return peliculas;
     }
 
+    @GetMapping(path="/usuario") 
+    public ResponseEntity<Usuario> getUsuario (@RequestParam String token){
+        Usuario usuario = new Usuario();
+        String query = String.format("select count(*) from usuario where token='%s' ", token);
+        int rowCount = this.database.queryForObject(query, Integer.class);
+        if (rowCount == 1) { // Existe un usuario que hace match con el token
+            query = String.format("select * from usuario where token='%s' limit 1 ", token);
+            usuario = this.database.queryForObject(query, new RowMapper<Usuario>() {
+                public Usuario mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    Usuario usuario = new Usuario();
+                    usuario.setNombre(rs.getString("nombre"));
+                    usuario.setAlias(rs.getString("alias"));
+                    usuario.setApellido1(rs.getString("apellido1"));
+                    usuario.setApellido2(rs.getString("apellido2"));
+                    usuario.setEdad(Integer.parseInt(rs.getString("edad")));
+                    usuario.setCorreo(rs.getString("correo"));
+                    usuario.setGenero(rs.getString("genero"));
+                    return usuario;
+                }
+            });
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(usuario);
+        }else{
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(usuario);
+        }
+    }
+
     @CrossOrigin(origins = "http://localhost:3000", methods = RequestMethod.POST)
     @PostMapping(path="/usuario") 
     public ResponseEntity<String> addUsuario (@RequestBody FormaUsuario forma){

@@ -27,6 +27,13 @@ const StyledNavBar = styled.div`
     right: 15px;
     padding-top: 8px;
 }
+.info-usuario {
+    cursor: pointer;
+    width: fit-content;
+    border: 2px solid white;
+    border-radius: 10px;
+    padding: 6px;
+}
 
 @media (max-width: 600px) { 
 	#topnav{

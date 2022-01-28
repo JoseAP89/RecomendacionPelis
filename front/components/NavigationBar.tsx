@@ -1,11 +1,16 @@
-import {StyledNavBar} from '../styles/styledComponents/Styled'
+import {StyledNavBar} from '../styles/styledComponents/StyledNavBar'
 import Link from 'next/link'
 import { useEffect } from 'react';
 import Head from 'next/head';
 import { Button } from 'react-bootstrap';
 import { useRouter } from 'next/router';
+import FormaUsuario from '../models/formausuario';
 
-const NavigationBar = () => {
+interface PropsUsuario {
+	usuario: FormaUsuario | undefined,
+}
+
+const NavigationBar = ({usuario}: PropsUsuario) => {
   const router = useRouter()
 
 
@@ -24,7 +29,11 @@ const NavigationBar = () => {
 
 	        <nav id="topnav">
 				<div className='tab-nav'>THEMOVIEDB</div>
-				<div className='tab-nav' >Bienvenido  	&ensp;<i className="fas fa-user"></i> &ensp; <span id='usuario-alias'></span></div>
+				<div className='tab-nav' >Bienvenido  	&ensp;
+					<div className='info-usuario'>
+						<i className="fas fa-user"></i> &ensp; <span id='usuario-alias'></span>
+					</div>
+				</div>
 				<div className="cerrar-sesion">
 					<Button variant="danger" onClick={ () => {cerrarSesion()}}>Cerrar sesión</Button> 
 				</div>
