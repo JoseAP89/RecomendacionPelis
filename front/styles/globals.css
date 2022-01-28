@@ -87,3 +87,7 @@ p {
 .bienvenido {
   color:green;
 }
+
+.modal-body {
+  background-color: white;
+}
