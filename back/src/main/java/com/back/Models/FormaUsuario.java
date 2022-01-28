@@ -1,5 +1,7 @@
 package com.back.Models;
 
+import org.springframework.lang.Nullable;
+
 public class FormaUsuario {
     private String nombre;
     private String apellido1;
@@ -9,6 +11,8 @@ public class FormaUsuario {
     private String edad;
     private String genero;
     private String password;
+    @Nullable
+    private String token;
     private String genero_favorito;
     private String actor_favorito;
     private String dir_favorito;

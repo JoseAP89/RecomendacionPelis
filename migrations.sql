@@ -14,6 +14,7 @@ CREATE TABLE usuario (
     genero varchar(1),
     correo varchar(100) not null,
     password varchar(100) not null,
+    token varchar(36) not null unique,
     creado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     modificado TIMESTAMP 
 );

@@ -1,9 +1,9 @@
 package com.back.Controllers;
-import org.hibernate.annotations.SourceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
@@ -23,9 +21,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.back.Models.*;
@@ -171,6 +171,8 @@ public class MovieController {
         usuario.setEdad(Integer.parseInt(forma.getEdad()));
         usuario.setCorreo(forma.getCorreo());
         usuario.setGenero(forma.getGenero());
+        String token = UUID.randomUUID().toString();   
+        usuario.setToken(token);
         usuarioRepositorio.save(usuario);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("Ok");
@@ -184,9 +186,32 @@ public class MovieController {
                                         forma.getAlias_correo( ), forma.getAlias_correo( ), forma.getPassword( ));
         int rowCount = this.database.queryForObject(query, Integer.class);
         if (rowCount == 1) { // Existe un usuario que hace match 
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Ok");
+            query = String.format("select token from usuario where (alias='%s' or correo='%s') and password='%s'", 
+                forma.getAlias_correo( ), forma.getAlias_correo( ), forma.getPassword( ));
+            String token = this.database.queryForObject(query, String.class);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(token); // manda token del usuario para que pueda tener activa su sesión
         }else{
             return ResponseEntity.status(HttpStatus.CONFLICT).body("No existe coincidencias, Favor de revisar Usuario o contraseña");
+        }
+    }
+
+    @GetMapping(path="/usuario/verificacion") 
+    public ResponseEntity<String> checkToken (@RequestParam String token){
+        String query = String.format("select count(*) from usuario where token='%s' ", token);
+        int rowCount = this.database.queryForObject(query, Integer.class);
+        if (rowCount == 1) { // Existe un usuario que hace match con el token
+            query = String.format("select * from usuario where token='%s' limit 1 ", token);
+            Usuario usuario = this.database.queryForObject(query, new RowMapper<Usuario>() {
+            public Usuario mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Usuario usuario = new Usuario();
+                usuario.setAlias(rs.getString("alias"));
+                usuario.setToken(rs.getString("token"));
+                return usuario;
+            }
+        });
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(usuario.getAlias());
+        }else{
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Token invalido");
         }
     }
 }
