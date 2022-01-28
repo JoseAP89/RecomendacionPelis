@@ -1,6 +1,9 @@
 import {StyledNavBar} from './Styled'
 import Link from 'next/link'
 import { useEffect } from 'react';
+import Head from 'next/head';
+import { Button } from 'react-bootstrap';
+import { useRouter } from 'next/router';
 
 interface NavigationElement {
   title: string;
@@ -8,28 +11,31 @@ interface NavigationElement {
 }
 
 const NavigationBar = () => {
+  const router = useRouter()
 
-	
-	const menuList : Array<NavigationElement> = [
-	    { title: "Inicio", url: "/"},
-	    { title: "Alta", url: "/signup"},
-	    { title: "Apertura", url: "/opensavingsaccount"},
-	    { title: "Transacciones", url: "/transactions"}
-	 ];
+
+	function cerrarSesion() {
+      sessionStorage.setItem("token","");
+      router.push('/');
+	}
 
 	return (
+		<>
+		<Head>
+			<script src="https://kit.fontawesome.com/1348fe1b4f.js" crossOrigin="anonymous" ></script>
+		</Head>
 		<StyledNavBar>
-	        <div id="topnav">
-	          { menuList.map( (m,i) =>{
-	              return (
-	              	<Link href={m.url} key={i}>
-	              		<a className="tab-nav" style={{color:"blue"}}>{m.title}</a>
-	              	</Link>
-	              )
-	            })
-	          }
-	        </div>
+
+
+	        <nav id="topnav">
+				<div className='tab-nav'>THEMOVIEDB</div>
+				<div className='tab-nav' >Bienvenido  	&ensp;<i className="fas fa-user"></i> &ensp; <span id='usuario-alias'></span></div>
+				<div className="cerrar-sesion">
+					<Button variant="danger" onClick={ () => {cerrarSesion()}}>Cerrar sesión</Button> 
+				</div>
+	        </nav>
       	</StyledNavBar>
+		</>
 	);
 };
 export default NavigationBar;
