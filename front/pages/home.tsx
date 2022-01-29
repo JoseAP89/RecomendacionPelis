@@ -33,6 +33,11 @@ const Home: NextPage = () => {
     }).catch( (error) => { // token erroneo, acceso ilegal, regresarse a la pantalla de inicio de sesión
       console.log("error:",error);
     });
+    TransactionService.getRecomendacion(token).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    });
   }, []);
 
   useEffect(() => {
@@ -42,13 +47,7 @@ const Home: NextPage = () => {
     }
   }, [alias]);
 
-  useEffect(() => {
-  TransactionService.getRecomendacion("1").then((res) => {
-    console.log(res);
-  }).catch((err) => {
-    console.log(err);
-  })
-  }, []);
+
 
   return (
     <>
@@ -67,12 +66,6 @@ const Home: NextPage = () => {
           Estimado cliente, ahora puedes abrir cuentas de ahorro con nosotros. <br/>
           Presiona el enlace requerido de acuerdo a tus necesidades. Ofrecemos los siguientes servicios:
         </p>
-
-        <div>
-          <button id="btnGetRecomendacion">Obtener Recomendaciones</button>
-          <p id = "textRecomendacion"></p>
-        </div>
-
 
       </Container>
     </>

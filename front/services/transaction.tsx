@@ -59,10 +59,10 @@ async function checkToken(token: string): Promise<AxiosResponse<string>>{
     return axios.get(url,{params:{token}});
 }
 
-async function getRecomendacion(user_id : string): Promise<any>{
+async function getRecomendacion(token : string): Promise<any>{
     const url = `${backendsrc}/api/peliculas/recomendacion`;
     // Default options are marked with *
-    return axios.get(url, {params: {user_id}});
+    return axios.get(url, {params: {token}});
 }
 
 export default TransactionService;

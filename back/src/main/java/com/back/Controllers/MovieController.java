@@ -155,8 +155,8 @@ public class MovieController {
     }
 
     @GetMapping(path="/peliculas/recomendacion")
-    public @ResponseBody Iterable<Recomendacion> getRecomendacion(@RequestParam String user_id) {
-        String query = String.format("select api_id from favorito where usuario_id='%s' and catalogo_id=2", user_id);
+    public @ResponseBody Iterable<Recomendacion> getRecomendacion(@RequestParam String token) {
+        String query = String.format("select api_id from favorito where (select usuario_id from usuario where token ='%s') and catalogo_id=2;", token);
         int api_id = this.database.queryForObject(query, Integer.class);
 
         String src = String.format("https://api.themoviedb.org/3/movie/%s/recommendations?api_key=%s&language=es-MX", api_id, apy_key);
