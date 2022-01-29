@@ -22,13 +22,28 @@ public class Usuario {
     private String genero;
     private String correo;
     private String password;
+    private String token;
     private Date creado;
     @Nullable
     private Date modificado;
 
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     public long getUsuario_id() {
         return usuario_id;
     }
+
+    public void setUsuario_id(long usuario_id) {
+        this.usuario_id= usuario_id;
+    }
+
 
     public String getNombre() {
         return nombre;

@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-
+import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { Container, Form, Button, Alert} from 'react-bootstrap'
 import { Controller, useForm } from "react-hook-form";
@@ -12,9 +12,9 @@ import Cuenta from '../models/cuenta';
 
 
 const Index: NextPage = () => {
-
+  const router = useRouter()
   const [cuenta, setCuenta] = useState<boolean>(true);
-  const { register: regConCuenta, handleSubmit: handleSubmitConCuenta, formState: { errors : errorsConCuenta} } = useForm();
+  const { getValues: getValuesConCuenta, register: regConCuenta, handleSubmit: handleSubmitConCuenta, formState: { errors : errorsConCuenta} } = useForm();
   const { reset, control,register: regSinCuenta, handleSubmit: handleSubmitSinCuenta, formState: { errors : errorsSinCuenta} } = useForm();
   const [generos, setGeneros] = useState<Array<Box>>([]);
   const [formaUsuario, setFormaUsuario] = useState<FormaUsuario>();
@@ -38,12 +38,8 @@ const Index: NextPage = () => {
   // alertas en el post de agregar usuario, si positivo mensaje de exito, si neg mensaje de error, si null no se muestra nada
   const [postUsuarioStatus, setPostUsuarioStatus] = useState<boolean|null>(null);
   const [postUsuarioRegistradoStatus, setUsuarioRegistradoStatus] = useState<boolean|null>(null);
+
 	useEffect(() => {
-		// remueve la barra de navegacion del DOM en la pantalla de iniciar sesión
-		let nav : HTMLElement|null= document.querySelector("#topnav");
-		if (!!nav) {
-			nav.remove();	
-		}
     if (generos.length==0) {
       TransactionService.getGeneros().then((resp) =>{
         setGeneros(resp.data);
@@ -104,16 +100,14 @@ const Index: NextPage = () => {
       apellido2: data.apellido2,
       correo: data.correo,
       alias: data.alias,
-      edad: data.edad,
-      genero: data.genero,
+      edad: data.edad == "" ? "-1" : data.edad,
+      genero: data.genero.lenght > 1 ? "X": data.genero,
       password: data.password1,
       dir_favorito: data.dir_favorito,
       actor_favorito: data.actor_favorito,
       genero_favorito: data.genero_favorito,
       peli_favorita: data.peli_favorita
     };
-    console.log("usuario nuevo:",usuario);
-    console.log("reg", errorsSinCuenta);
     TransactionService.addUsuario(usuario).then((res) => {
         setPostUsuarioStatus(true);
         reset();
@@ -132,11 +126,14 @@ const Index: NextPage = () => {
       alias_correo: data.alias_correo,
       password: data.password
     }
-    console.log("data",cuenta);
     TransactionService.checkUsuario(cuenta).then((res) => {
       setUsuarioRegistradoStatus(true);
+      // cambia pagina a /home si se identifico correctamente el usuario
+      sessionStorage.setItem("token",res.data); // guarda el token
+      router.push('/home');
     }).catch((err) => {
       setUsuarioRegistradoStatus(false);
+      sessionStorage.setItem("token","");
     }).finally(()=>{
       setTimeout(() => {
         setUsuarioRegistradoStatus(null);
@@ -187,7 +184,7 @@ const Index: NextPage = () => {
                 />
               </Form.Group>
 
-              <Button  type="submit">Enviar</Button>
+              <Button  className="my-4" type="submit">Enviar</Button>
 
           </Form>
         }
@@ -244,7 +241,7 @@ const Index: NextPage = () => {
                 <Form.Select aria-label="Default select example" style={{width:"280px"}}
                   {...regSinCuenta("genero")}
                 >
-                  <option>Selecciona una opción</option>
+                  <option value="X">Selecciona una opción</option>
                   <option value="F">Femenino</option>
                   <option value="M">Masculino</option>
                 </Form.Select>
@@ -294,7 +291,7 @@ const Index: NextPage = () => {
                 <Controller
                   name="actor_favorito"
                   control={control}
-		  rules={{ required: true }}
+		              rules={{ required: true }}
                   render={({ field }) => 
                     <Select 
                       {...field} 
@@ -327,7 +324,7 @@ const Index: NextPage = () => {
                 <Controller
                   name="dir_favorito"
                   control={control}
-		  rules={{ required: true }}
+		              rules={{ required: true }}
                   render={({ field }) => 
                     <Select 
                       {...field} 
@@ -360,7 +357,7 @@ const Index: NextPage = () => {
                 <Controller
                   name="peli_favorita"
                   control={control}
-		  rules={{ required: true }}
+		              rules={{ required: true }}
                   render={({ field }) => 
                     <Select 
                       {...field} 
