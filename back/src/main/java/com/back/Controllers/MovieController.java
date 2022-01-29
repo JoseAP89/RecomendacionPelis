@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.Collections;
 
 import com.back.Models.*;
 import com.back.Repositories.*;
@@ -147,6 +148,33 @@ public class MovieController {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return peliculas;
+    }
+
+    @GetMapping(path="/peliculas/recomendacion")
+    public @ResponseBody Iterable<Recomendacion> getRecomendacion(@RequestParam String user_id) {
+        String query = String.format("select api_id from favorito where usuario_id='%s' and catalogo_id=2", user_id);
+        int api_id = this.database.queryForObject(query, Integer.class);
+
+        String src = String.format("https://api.themoviedb.org/3/movie/%s/recommendations?api_key=%s&language=es-MX", api_id, apy_key);
+        List<Recomendacion> peliculas = new ArrayList<>();
+        try {
+            URL url = new URL(src);
+            ResultadoRecomendacionContainer container = objectMapper.readValue(url, ResultadoRecomendacionContainer.class);
+            peliculas = container.getResults()
+                .stream()
+                .distinct()
+                .collect(Collectors.toList());
+            int maxPelis = 15;
+            Collections.shuffle(peliculas);
+            while (peliculas.size() > maxPelis) {
+                peliculas.remove(peliculas.size() - 1);
+            }
+            System.out.println(container); 
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

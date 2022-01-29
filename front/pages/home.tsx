@@ -41,8 +41,15 @@ const Home: NextPage = () => {
       div_alias.textContent = alias;
     }
   }, [alias]);
-  
-  
+
+  useEffect(() => {
+  TransactionService.getRecomendacion("1").then((res) => {
+    console.log(res);
+  }).catch((err) => {
+    console.log(err);
+  })
+  }, []);
+
   return (
     <>
       <Head>
@@ -61,9 +68,13 @@ const Home: NextPage = () => {
           Presiona el enlace requerido de acuerdo a tus necesidades. Ofrecemos los siguientes servicios:
         </p>
 
+        <div>
+          <button id="btnGetRecomendacion">Obtener Recomendaciones</button>
+          <p id = "textRecomendacion"></p>
+        </div>
+
 
       </Container>
-
     </>
   )
 }
