@@ -199,7 +199,7 @@ public class MovieController {
                 .stream()
                 .distinct()
                 .collect(Collectors.toList());
-                
+
             int maxPelis = 15;
             Collections.shuffle(peliculas);
             while (peliculas.size() > maxPelis) {
@@ -213,7 +213,7 @@ public class MovieController {
     }
 
     @GetMapping(path="/peliculas/recomendacion")
-    public @ResponseBody Iterable<Pelicula> getRecomendacionby(@RequestParam String token, @RequestParam String tipoDeRecomendacion) {
+    public @ResponseBody ResponseEntity<Iterable<Pelicula>> getRecomendacionby(@RequestParam String token, @RequestParam String tipoDeRecomendacion) {
         int catalogo_id;
         String src;
 
@@ -222,15 +222,18 @@ public class MovieController {
             String query = String.format("select api_id from favorito where usuario_id=(select usuario_id from usuario where token ='%s') and catalogo_id=%s", token, catalogo_id);
             int api_id = this.database.queryForObject(query, Integer.class);
             src = String.format("https://api.themoviedb.org/3/movie/%s/recommendations?api_key=%s&language=es-MX", api_id, apy_key);
-            return byPelicula(src);
+            Iterable<Pelicula> peliculas = byPelicula(src);
 
+            return ResponseEntity.status(peliculas.iterator().hasNext() ? HttpStatus.ACCEPTED : HttpStatus.CONFLICT).body(peliculas);
         }else{
             catalogo_id = tipoDeRecomendacion.equals("actor") ? 3 : 4;
             String query = String.format("select nombre_completo from favorito where usuario_id=(select usuario_id from usuario where token ='%s') and catalogo_id=%s", token, catalogo_id);
             String nombre_completo = this.database.queryForObject(query, String.class);
             nombre_completo = formateaNombre_completo(nombre_completo);
             src = String.format("https://api.themoviedb.org/3/search/person?api_key=%s&query=%s",apy_key, nombre_completo);
-            return byPersona(src);
+            Iterable<Pelicula> peliculas = byPersona(src);
+            
+            return ResponseEntity.status(peliculas.iterator().hasNext() ? HttpStatus.ACCEPTED : HttpStatus.CONFLICT).body(peliculas);
         }
     }
 
