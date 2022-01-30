@@ -7,7 +7,6 @@ const TransactionService = {
     getGeneros,
     getPersonas,
     getPeliculas,
-    getRecomendacion,
     addUsuario,
     checkUsuario,
     checkToken,
@@ -34,14 +33,6 @@ async function getPeliculas(title: string): Promise<AxiosResponse<Array<Box>>>{
     // Default options are marked with *
     return axios.get(url, {params:{title}});
 }
-<<<<<<< HEAD
-async function getRecomendacion(user_id: string): Promise<any>{
-    const url = `${backendsrc}/api/peliculas/recomendacion`;
-    // Default options are marked with *
-    return axios.get(url, {params: {user_id}});
-}
-async function addUsuario(data: FormaUsuario): Promise<any>{
-=======
 
 async function getUsuario(token: string): Promise<AxiosResponse<FormaUsuario>>{
     const url = `${backendsrc}/api/usuario`;
@@ -51,7 +42,6 @@ async function getUsuario(token: string): Promise<AxiosResponse<FormaUsuario>>{
 
 
 async function addUsuario(data: FormaUsuario): Promise<AxiosResponse<string>>{
->>>>>>> main
     const url = `${backendsrc}/api/usuario`;
     // Default options are marked with *
     return axios.post(url,data);
