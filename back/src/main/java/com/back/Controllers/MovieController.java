@@ -1,10 +1,5 @@
 package com.back.Controllers;
-<<<<<<< HEAD
-import org.hibernate.annotations.SourceType;
-import org.hibernate.engine.internal.Collections;
-=======
 import org.apache.tomcat.util.json.JSONParser;
->>>>>>> main
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -160,20 +155,6 @@ public class MovieController {
         return peliculas;
     }
 
-<<<<<<< HEAD
-    @GetMapping(path="/peliculas/recomendacion")
-    public @ResponseBody Iterable<Box> getRecomendacion(@RequestParam String user_id) {
-        // This returns a JSON or XML with the users
-
-        String query = String.format("select api_id from favorito where usuario_id='%s' and catalogo_id=2", user_id);
-        int api_id = this.database.queryForObject(query, Integer.class);
-
-        String src = String.format("https://api.themoviedb.org/3/movie/%s/recommendations?api_key=%s&language=es-MX", api_id, apy_key);
-        List<Box> peliculas = new ArrayList< >( );
-        try {
-            URL url = new URL(src);
-            ResultadoContainer container = objectMapper.readValue(url, ResultadoContainer.class);
-=======
     private String formateaNombre_completo(String nombre_completo){
         String s = "";
         for(int i = 0; i < nombre_completo.length( ); ++i){
@@ -190,34 +171,23 @@ public class MovieController {
         try {
             URL url = new URL(src);
             ResultadoPeliculaContainer container = objectMapper.readValue(url, ResultadoPeliculaContainer.class);
->>>>>>> main
             peliculas = container.getResults()
                 .stream()
                 .distinct()
                 .collect(Collectors.toList());
-<<<<<<< HEAD
-            int maxPelis = 15;
-=======
 
             int maxPelis = 15;
             Collections.shuffle(peliculas);
->>>>>>> main
             while (peliculas.size() > maxPelis) {
                 peliculas.remove(peliculas.size() - 1);
             }
             System.out.println(container); 
         } catch (Exception e) {
-<<<<<<< HEAD
-            // TODO Auto-generated catch block
-=======
->>>>>>> main
             e.printStackTrace();
         }
         return peliculas;
     }
 
-<<<<<<< HEAD
-=======
     private Iterable<Pelicula> byPersona(String src){
         List<Pelicula> peliculas = new ArrayList<>();
         try {
@@ -293,7 +263,6 @@ public class MovieController {
         }
     }
 
->>>>>>> main
     @CrossOrigin(origins = "http://localhost:3000", methods = RequestMethod.POST)
     @PostMapping(path="/usuario") 
     public ResponseEntity<String> addUsuario (@RequestBody FormaUsuario forma){
