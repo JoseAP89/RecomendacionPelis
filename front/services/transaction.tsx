@@ -10,7 +10,8 @@ const TransactionService = {
     addUsuario,
     checkUsuario,
     checkToken,
-    getUsuario
+    getUsuario,
+    getRecomendacionby
 }
 
 const backendsrc = "http://localhost:8080"
@@ -56,6 +57,12 @@ async function checkToken(token: string): Promise<AxiosResponse<string>>{
     const url = `${backendsrc}/api/usuario/verificacion`;
     // Default options are marked with *
     return axios.get(url,{params:{token}});
+}
+
+async function getRecomendacionby(token : string, tipoDeRecomendacion : string): Promise<any>{
+    const url = `${backendsrc}/api/peliculas/recomendacion`;
+    // Default options are marked with *
+    return axios.get(url, {params: {token, tipoDeRecomendacion}});
 }
 
 export default TransactionService;

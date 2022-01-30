@@ -4,7 +4,6 @@ public class Cuenta {
     private String alias_correo;
     private String password;
 
-
     public String getAlias_correo( ){
         return this.alias_correo;
     }
