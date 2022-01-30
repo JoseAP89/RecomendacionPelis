@@ -12,6 +12,7 @@ edad int
 genero varchar
 correo varchar
 password varchar
+token varchar
 creado Date
 modificado Date
 
