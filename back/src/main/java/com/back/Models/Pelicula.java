@@ -3,7 +3,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Recomendacion {
+public class Pelicula {
 
     private String id;
     private String title;
@@ -11,8 +11,8 @@ public class Recomendacion {
     private String poster_path;
     private String release_date;
     private List<String> genre_ids;
-
-    public Recomendacion() {
+    private List<Pelicula> known_for;
+    public Pelicula() {
     }
 
     public String getTitle() {
@@ -36,6 +36,13 @@ public class Recomendacion {
     }
     public List<String> getGenre_ids( ){
         return this.genre_ids;
+    }
+    public List<Pelicula> getKnown_for( ){
+        return this.known_for;
+    }
+
+    public void setKnown_for(List<Pelicula> s){
+        this.known_for = s;
     }
 
     public void setTitle(String t) {

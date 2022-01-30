@@ -33,7 +33,17 @@ const Home: NextPage = () => {
     }).catch( (error) => { // token erroneo, acceso ilegal, regresarse a la pantalla de inicio de sesión
       console.log("error:",error);
     });
-    TransactionService.getRecomendacion(token).then((res) => {
+    TransactionService.getRecomendacionby(token, "pelicula").then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    });
+    TransactionService.getRecomendacionby(token, "actor").then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    });
+    TransactionService.getRecomendacionby(token, "director").then((res) => {
       console.log(res);
     }).catch((err) => {
       console.log(err);

@@ -1,4 +1,5 @@
 package com.back.Controllers;
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -154,20 +155,27 @@ public class MovieController {
         return peliculas;
     }
 
-    @GetMapping(path="/peliculas/recomendacion")
-    public @ResponseBody Iterable<Recomendacion> getRecomendacion(@RequestParam String token) {
-        String query = String.format("select api_id from favorito where (select usuario_id from usuario where token ='%s') and catalogo_id=2;", token);
-        int api_id = this.database.queryForObject(query, Integer.class);
-
-        String src = String.format("https://api.themoviedb.org/3/movie/%s/recommendations?api_key=%s&language=es-MX", api_id, apy_key);
-        List<Recomendacion> peliculas = new ArrayList<>();
+    private String formateaNombre_completo(String nombre_completo){
+        String s = "";
+        for(int i = 0; i < nombre_completo.length( ); ++i){
+            if(Character.isLetterOrDigit(nombre_completo.charAt(i))){
+                s += Character.toString(nombre_completo.charAt(i));
+            }else{
+                s += "%" + Integer.toHexString((int)(nombre_completo.charAt(i)));
+            }
+        }
+        return s;
+    }
+    private Iterable<Pelicula> byPelicula(String src){
+        List<Pelicula> peliculas = new ArrayList<>();
         try {
             URL url = new URL(src);
-            ResultadoRecomendacionContainer container = objectMapper.readValue(url, ResultadoRecomendacionContainer.class);
+            ResultadoPeliculaContainer container = objectMapper.readValue(url, ResultadoPeliculaContainer.class);
             peliculas = container.getResults()
                 .stream()
                 .distinct()
                 .collect(Collectors.toList());
+
             int maxPelis = 15;
             Collections.shuffle(peliculas);
             while (peliculas.size() > maxPelis) {
@@ -175,10 +183,55 @@ public class MovieController {
             }
             System.out.println(container); 
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return peliculas;
+    }
+
+    private Iterable<Pelicula> byPersona(String src){
+        List<Pelicula> peliculas = new ArrayList<>();
+        try {
+            URL url = new URL(src);
+            ResultadoPersonaContainer container = objectMapper.readValue(url, ResultadoPersonaContainer.class);
+            List<Persona> personas = new ArrayList<>();
+            personas = container.getResults(); 
+            peliculas = personas.get(0).getKnown_for() // obtenemos la persona y de ella las peliculas en las cuales participa
+                .stream()
+                .distinct()
+                .collect(Collectors.toList());
+                
+            int maxPelis = 15;
+            Collections.shuffle(peliculas);
+            while (peliculas.size() > maxPelis) {
+                peliculas.remove(peliculas.size() - 1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return peliculas;
+    }
+
+    @GetMapping(path="/peliculas/recomendacion")
+    public @ResponseBody Iterable<Pelicula> getRecomendacionby(@RequestParam String token, @RequestParam String tipoDeRecomendacion) {
+        int catalogo_id;
+        String src;
+
+        if(tipoDeRecomendacion.equals("pelicula")){
+            catalogo_id = 2;
+            String query = String.format("select api_id from favorito where usuario_id=(select usuario_id from usuario where token ='%s') and catalogo_id=%s", token, catalogo_id);
+            int api_id = this.database.queryForObject(query, Integer.class);
+            src = String.format("https://api.themoviedb.org/3/movie/%s/recommendations?api_key=%s&language=es-MX", api_id, apy_key);
+            return byPelicula(src);
+
+        }else{
+            catalogo_id = tipoDeRecomendacion.equals("actor") ? 3 : 4;
+            String query = String.format("select nombre_completo from favorito where usuario_id=(select usuario_id from usuario where token ='%s') and catalogo_id=%s", token, catalogo_id);
+            String nombre_completo = this.database.queryForObject(query, String.class);
+            nombre_completo = formateaNombre_completo(nombre_completo);
+            src = String.format("https://api.themoviedb.org/3/search/person?api_key=%s&query=%s",apy_key, nombre_completo);
+            return byPersona(src);
+        }
     }
 
     @GetMapping(path="/usuario") 

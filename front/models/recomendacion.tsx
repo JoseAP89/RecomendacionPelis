@@ -1,4 +1,4 @@
-export default interface recomendacion {
+export default interface pelicula {
     id? : string,
     title? : string,
     overview? : string,

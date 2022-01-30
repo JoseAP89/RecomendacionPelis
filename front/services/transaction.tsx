@@ -11,7 +11,7 @@ const TransactionService = {
     checkUsuario,
     checkToken,
     getUsuario,
-    getRecomendacion
+    getRecomendacionby
 }
 
 const backendsrc = "http://localhost:8080"
@@ -59,10 +59,10 @@ async function checkToken(token: string): Promise<AxiosResponse<string>>{
     return axios.get(url,{params:{token}});
 }
 
-async function getRecomendacion(token : string): Promise<any>{
+async function getRecomendacionby(token : string, tipoDeRecomendacion : string): Promise<any>{
     const url = `${backendsrc}/api/peliculas/recomendacion`;
     // Default options are marked with *
-    return axios.get(url, {params: {token}});
+    return axios.get(url, {params: {token, tipoDeRecomendacion}});
 }
 
 export default TransactionService;
