@@ -36,6 +36,18 @@ const StyledIndex = styled.div`
                 grid-column: 10px;
             }
         }
+        @media (max-width: 620px) {
+            #form-container {
+                width: 100vw;
+                padding: 40px 10px 40px 10px;
+            }
+            .forma-crear-cuenta{
+                display: grid;
+                grid-template-columns: 1fr;
+                grid-row: 10px;
+                justify-items: center;
+            }
+        }
 
     }
 
