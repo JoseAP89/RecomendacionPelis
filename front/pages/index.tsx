@@ -85,17 +85,6 @@ const Index: NextPage = () => {
   }, [searchPeli]);
   
   const onSubmitSinCuenta = (data: any) => {
-    // se integran el contenido de la dupla para mandarse en un solo parametro al back, formato: xxxx#yyyyy
-    data.genero_favorito = generos.map(x => x.id+"#"+ x.name).find(x => x.split("#")[0] == data.genero_favorito);
-    if (!!data.actor_favorito) {
-      data.actor_favorito = data.actor_favorito.value + "#" + data.actor_favorito.label ;
-    }
-    if (!!data.dir_favorito) {
-      data.dir_favorito = data.dir_favorito.value + "#" + data.dir_favorito.label ;
-    }
-    if (!!data.peli_favorita) {
-      data.peli_favorita = data.peli_favorita.value + "#" + data.peli_favorita.label ;
-    }
     let usuario : FormaUsuario = {
       nombre : data.nombre,
       apellido1: data.apellido1,
@@ -105,10 +94,14 @@ const Index: NextPage = () => {
       edad: data.edad == "" ? "-1" : data.edad,
       genero: data.genero.lenght > 1 ? "X": data.genero,
       password: data.password1,
-      dir_favorito: data.dir_favorito,
-      actor_favorito: data.actor_favorito,
-      genero_favorito: data.genero_favorito,
-      peli_favorita: data.peli_favorita
+      dir_favorito_id: data.dir_favorito.value,
+      dir_favorito_nombre: data.dir_favorito.label,
+      actor_favorito_id: data.actor_favorito.value,
+      actor_favorito_nombre: data.actor_favorito.label,
+      genero_favorito_id: data.genero_favorito.value,
+      genero_favorito_nombre: data.genero_favorito.label,
+      peli_favorita_id: data.peli_favorita.value,
+      peli_favorita_nombre: data.peli_favorita.label
     };
     TransactionService.addUsuario(usuario).then((res) => {
         setPostUsuarioStatus(true);
@@ -276,16 +269,34 @@ const Index: NextPage = () => {
 
               <Form.Group className="mb-3 input-sincuenta pref-genero" controlId="pref-genero">
                 <Form.Label>Selecciona tú género favorito <span className="field-required">*</span></Form.Label>
-                <Form.Select aria-label="Default select example" style={{width:"280px"}}
-                  {...regSinCuenta("genero_favorito", { required: true})}
-                >
-                  <option>Selecciona una opción</option>
-                  {
-                    generos.map((genero)=>{
-                      return <option key={genero.id} value={genero.id}>{genero.name}</option>
-                    })
+                <Controller
+                  name="genero_favorito"
+                  control={control}
+		              rules={{ required: true }}
+                  render={({ field }) => 
+                    <Select 
+                      {...field} 
+                      className="select-react"
+                      escapeClearsValue={true}
+                      isClearable={true}
+                      isSearchable={true}
+                      options=
+                      {
+                        generos.map((genero: Box) =>{
+                          return {label:genero.name, value: genero.id}
+                        })
+                      }
+                      styles={{
+                        option: (provided, state) => ({
+                          ...provided,
+                          borderBottom: '1px dotted pink',
+                          color: state.isSelected ? 'white' : 'black',
+                          padding: 6,
+                        })
+                      }}
+                    />
                   }
-                </Form.Select>
+                />
               </Form.Group>
 
               <Form.Group className="mb-3 input-sincuenta pref-genero" controlId="pref-genero">
