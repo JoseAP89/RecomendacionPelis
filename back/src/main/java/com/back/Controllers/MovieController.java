@@ -1,10 +1,15 @@
 package com.back.Controllers;
+<<<<<<< HEAD
 import org.hibernate.annotations.SourceType;
 import org.hibernate.engine.internal.Collections;
+=======
+import org.apache.tomcat.util.json.JSONParser;
+>>>>>>> main
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
@@ -24,10 +27,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.Collections;
 
 import com.back.Models.*;
 import com.back.Repositories.*;
@@ -154,6 +160,7 @@ public class MovieController {
         return peliculas;
     }
 
+<<<<<<< HEAD
     @GetMapping(path="/peliculas/recomendacion")
     public @ResponseBody Iterable<Box> getRecomendacion(@RequestParam String user_id) {
         // This returns a JSON or XML with the users
@@ -166,22 +173,127 @@ public class MovieController {
         try {
             URL url = new URL(src);
             ResultadoContainer container = objectMapper.readValue(url, ResultadoContainer.class);
+=======
+    private String formateaNombre_completo(String nombre_completo){
+        String s = "";
+        for(int i = 0; i < nombre_completo.length( ); ++i){
+            if(Character.isLetterOrDigit(nombre_completo.charAt(i))){
+                s += Character.toString(nombre_completo.charAt(i));
+            }else{
+                s += "%" + Integer.toHexString((int)(nombre_completo.charAt(i)));
+            }
+        }
+        return s;
+    }
+    private Iterable<Pelicula> byPelicula(String src){
+        List<Pelicula> peliculas = new ArrayList<>();
+        try {
+            URL url = new URL(src);
+            ResultadoPeliculaContainer container = objectMapper.readValue(url, ResultadoPeliculaContainer.class);
+>>>>>>> main
             peliculas = container.getResults()
                 .stream()
                 .distinct()
                 .collect(Collectors.toList());
+<<<<<<< HEAD
             int maxPelis = 15;
+=======
+
+            int maxPelis = 15;
+            Collections.shuffle(peliculas);
+>>>>>>> main
             while (peliculas.size() > maxPelis) {
                 peliculas.remove(peliculas.size() - 1);
             }
             System.out.println(container); 
         } catch (Exception e) {
+<<<<<<< HEAD
             // TODO Auto-generated catch block
+=======
+>>>>>>> main
             e.printStackTrace();
         }
         return peliculas;
     }
 
+<<<<<<< HEAD
+=======
+    private Iterable<Pelicula> byPersona(String src){
+        List<Pelicula> peliculas = new ArrayList<>();
+        try {
+            URL url = new URL(src);
+            ResultadoPersonaContainer container = objectMapper.readValue(url, ResultadoPersonaContainer.class);
+            List<Persona> personas = new ArrayList<>();
+            personas = container.getResults(); 
+            peliculas = personas.get(0).getKnown_for() // obtenemos la persona y de ella las peliculas en las cuales participa
+                .stream()
+                .distinct()
+                .collect(Collectors.toList());
+
+            int maxPelis = 15;
+            Collections.shuffle(peliculas);
+            while (peliculas.size() > maxPelis) {
+                peliculas.remove(peliculas.size() - 1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return peliculas;
+    }
+
+    @GetMapping(path="/peliculas/recomendacion")
+    public @ResponseBody ResponseEntity<Iterable<Pelicula>> getRecomendacionby(@RequestParam String token, @RequestParam String tipoDeRecomendacion) {
+        int catalogo_id;
+        String src;
+
+        if(tipoDeRecomendacion.equals("pelicula")){
+            catalogo_id = 2;
+            String query = String.format("select api_id from favorito where usuario_id=(select usuario_id from usuario where token ='%s') and catalogo_id=%s", token, catalogo_id);
+            int api_id = this.database.queryForObject(query, Integer.class);
+            src = String.format("https://api.themoviedb.org/3/movie/%s/recommendations?api_key=%s&language=es-MX", api_id, apy_key);
+            Iterable<Pelicula> peliculas = byPelicula(src);
+
+            return ResponseEntity.status(peliculas.iterator().hasNext() ? HttpStatus.ACCEPTED : HttpStatus.CONFLICT).body(peliculas);
+        }else{
+            catalogo_id = tipoDeRecomendacion.equals("actor") ? 3 : 4;
+            String query = String.format("select nombre_completo from favorito where usuario_id=(select usuario_id from usuario where token ='%s') and catalogo_id=%s", token, catalogo_id);
+            String nombre_completo = this.database.queryForObject(query, String.class);
+            nombre_completo = formateaNombre_completo(nombre_completo);
+            src = String.format("https://api.themoviedb.org/3/search/person?api_key=%s&query=%s",apy_key, nombre_completo);
+            Iterable<Pelicula> peliculas = byPersona(src);
+            
+            return ResponseEntity.status(peliculas.iterator().hasNext() ? HttpStatus.ACCEPTED : HttpStatus.CONFLICT).body(peliculas);
+        }
+    }
+
+    @GetMapping(path="/usuario") 
+    public ResponseEntity<Usuario> getUsuario (@RequestParam String token){
+        Usuario usuario = new Usuario();
+        String query = String.format("select count(*) from usuario where token='%s' ", token);
+        int rowCount = this.database.queryForObject(query, Integer.class);
+        if (rowCount == 1) { // Existe un usuario que hace match con el token
+            query = String.format("select * from usuario where token='%s' limit 1 ", token);
+            usuario = this.database.queryForObject(query, new RowMapper<Usuario>() {
+                public Usuario mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    Usuario usuario = new Usuario();
+                    usuario.setNombre(rs.getString("nombre"));
+                    usuario.setAlias(rs.getString("alias"));
+                    usuario.setApellido1(rs.getString("apellido1"));
+                    usuario.setApellido2(rs.getString("apellido2"));
+                    usuario.setEdad(Integer.parseInt(rs.getString("edad")));
+                    usuario.setCorreo(rs.getString("correo"));
+                    usuario.setGenero(rs.getString("genero"));
+                    return usuario;
+                }
+            });
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(usuario);
+        }else{
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(usuario);
+        }
+    }
+
+>>>>>>> main
     @CrossOrigin(origins = "http://localhost:3000", methods = RequestMethod.POST)
     @PostMapping(path="/usuario") 
     public ResponseEntity<String> addUsuario (@RequestBody FormaUsuario forma){
@@ -200,6 +312,8 @@ public class MovieController {
         usuario.setEdad(Integer.parseInt(forma.getEdad()));
         usuario.setCorreo(forma.getCorreo());
         usuario.setGenero(forma.getGenero());
+        String token = UUID.randomUUID().toString();   
+        usuario.setToken(token);
         usuarioRepositorio.save(usuario);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("Ok");
@@ -213,9 +327,32 @@ public class MovieController {
                                         forma.getAlias_correo( ), forma.getAlias_correo( ), forma.getPassword( ));
         int rowCount = this.database.queryForObject(query, Integer.class);
         if (rowCount == 1) { // Existe un usuario que hace match 
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Ok");
+            query = String.format("select token from usuario where (alias='%s' or correo='%s') and password='%s'", 
+                forma.getAlias_correo( ), forma.getAlias_correo( ), forma.getPassword( ));
+            String token = this.database.queryForObject(query, String.class);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(token); // manda token del usuario para que pueda tener activa su sesión
         }else{
             return ResponseEntity.status(HttpStatus.CONFLICT).body("No existe coincidencias, Favor de revisar Usuario o contraseña");
+        }
+    }
+
+    @GetMapping(path="/usuario/verificacion") 
+    public ResponseEntity<String> checkToken (@RequestParam String token){
+        String query = String.format("select count(*) from usuario where token='%s' ", token);
+        int rowCount = this.database.queryForObject(query, Integer.class);
+        if (rowCount == 1) { // Existe un usuario que hace match con el token
+            query = String.format("select * from usuario where token='%s' limit 1 ", token);
+            Usuario usuario = this.database.queryForObject(query, new RowMapper<Usuario>() {
+            public Usuario mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Usuario usuario = new Usuario();
+                usuario.setAlias(rs.getString("alias"));
+                usuario.setToken(rs.getString("token"));
+                return usuario;
+            }
+        });
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(usuario.getAlias());
+        }else{
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Token invalido");
         }
     }
 }

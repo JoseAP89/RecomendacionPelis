@@ -84,3 +84,10 @@ p {
 .field-required {
   color:red;
 }
+.bienvenido {
+  color:green;
+}
+
+.modal-body {
+  background-color: white;
+}
