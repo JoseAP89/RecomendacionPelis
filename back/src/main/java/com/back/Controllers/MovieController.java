@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.Collections;
 
 import com.back.Models.*;
 import com.back.Repositories.*;
@@ -151,6 +152,88 @@ public class MovieController {
             e.printStackTrace();
         }
         return peliculas;
+    }
+
+    private String formateaNombre_completo(String nombre_completo){
+        String s = "";
+        for(int i = 0; i < nombre_completo.length( ); ++i){
+            if(Character.isLetterOrDigit(nombre_completo.charAt(i))){
+                s += Character.toString(nombre_completo.charAt(i));
+            }else{
+                s += "%" + Integer.toHexString((int)(nombre_completo.charAt(i)));
+            }
+        }
+        return s;
+    }
+    private Iterable<Pelicula> byPelicula(String src){
+        List<Pelicula> peliculas = new ArrayList<>();
+        try {
+            URL url = new URL(src);
+            ResultadoPeliculaContainer container = objectMapper.readValue(url, ResultadoPeliculaContainer.class);
+            peliculas = container.getResults()
+                .stream()
+                .distinct()
+                .collect(Collectors.toList());
+
+            int maxPelis = 15;
+            Collections.shuffle(peliculas);
+            while (peliculas.size() > maxPelis) {
+                peliculas.remove(peliculas.size() - 1);
+            }
+            System.out.println(container); 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return peliculas;
+    }
+
+    private Iterable<Pelicula> byPersona(String src){
+        List<Pelicula> peliculas = new ArrayList<>();
+        try {
+            URL url = new URL(src);
+            ResultadoPersonaContainer container = objectMapper.readValue(url, ResultadoPersonaContainer.class);
+            List<Persona> personas = new ArrayList<>();
+            personas = container.getResults(); 
+            peliculas = personas.get(0).getKnown_for() // obtenemos la persona y de ella las peliculas en las cuales participa
+                .stream()
+                .distinct()
+                .collect(Collectors.toList());
+
+            int maxPelis = 15;
+            Collections.shuffle(peliculas);
+            while (peliculas.size() > maxPelis) {
+                peliculas.remove(peliculas.size() - 1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return peliculas;
+    }
+
+    @GetMapping(path="/peliculas/recomendacion")
+    public @ResponseBody ResponseEntity<Iterable<Pelicula>> getRecomendacionby(@RequestParam String token, @RequestParam String tipoDeRecomendacion) {
+        int catalogo_id;
+        String src;
+
+        if(tipoDeRecomendacion.equals("pelicula")){
+            catalogo_id = 2;
+            String query = String.format("select api_id from favorito where usuario_id=(select usuario_id from usuario where token ='%s') and catalogo_id=%s", token, catalogo_id);
+            int api_id = this.database.queryForObject(query, Integer.class);
+            src = String.format("https://api.themoviedb.org/3/movie/%s/recommendations?api_key=%s&language=es-MX", api_id, apy_key);
+            Iterable<Pelicula> peliculas = byPelicula(src);
+
+            return ResponseEntity.status(peliculas.iterator().hasNext() ? HttpStatus.ACCEPTED : HttpStatus.CONFLICT).body(peliculas);
+        }else{
+            catalogo_id = tipoDeRecomendacion.equals("actor") ? 3 : 4;
+            String query = String.format("select nombre_completo from favorito where usuario_id=(select usuario_id from usuario where token ='%s') and catalogo_id=%s", token, catalogo_id);
+            String nombre_completo = this.database.queryForObject(query, String.class);
+            nombre_completo = formateaNombre_completo(nombre_completo);
+            src = String.format("https://api.themoviedb.org/3/search/person?api_key=%s&query=%s",apy_key, nombre_completo);
+            Iterable<Pelicula> peliculas = byPersona(src);
+            
+            return ResponseEntity.status(peliculas.iterator().hasNext() ? HttpStatus.ACCEPTED : HttpStatus.CONFLICT).body(peliculas);
+        }
     }
 
     @GetMapping(path="/usuario") 

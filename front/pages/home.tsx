@@ -33,6 +33,21 @@ const Home: NextPage = () => {
     }).catch( (error) => { // token erroneo, acceso ilegal, regresarse a la pantalla de inicio de sesión
       console.log("error:",error);
     });
+    TransactionService.getRecomendacionby(token, "pelicula").then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    });
+    TransactionService.getRecomendacionby(token, "actor").then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    });
+    TransactionService.getRecomendacionby(token, "director").then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    });
   }, []);
 
   useEffect(() => {
@@ -41,8 +56,9 @@ const Home: NextPage = () => {
       div_alias.textContent = alias;
     }
   }, [alias]);
-  
-  
+
+
+
   return (
     <>
       <Head>
@@ -61,9 +77,7 @@ const Home: NextPage = () => {
           Presiona el enlace requerido de acuerdo a tus necesidades. Ofrecemos los siguientes servicios:
         </p>
 
-
       </Container>
-
     </>
   )
 }
