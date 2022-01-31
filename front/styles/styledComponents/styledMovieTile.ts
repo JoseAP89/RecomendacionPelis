@@ -7,7 +7,6 @@ const StyledMovieTile = styled.div<Props>`
     @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;500&display=swap');
     font-family: 'DM Mono', monospace;
     background-image : ${ prop => {
-        console.log("img src: ","https://image.tmdb.org/t/p/w500"+prop.src )
        return "url(https://image.tmdb.org/t/p/w500"+prop.src + ")"
     }};
     background-size: 100% 100%;
