@@ -112,9 +112,11 @@ Una vez clonado el proyecto en tu local se debe seguir los siguientes pasos:
   `$  grant all privileges on peliculas.* to movie@localhost;` 
 6. Correr el script migrations.sql en la linea de comandos de mysql, desde tu manejador de bases de datos, que tiene el código para generar las tablas necesarias del proyecto.<br/>
   `$ source /ruta/absoluta/hacia/RecomendacionPelis/migrations.sql;`
-7. Cambiarse a la carpeta back y ejecutar el siguiente comando para correr el servidor del back.<br/>
+7. Encender Mysql con el comando establecido por XAMPP para tu SO, por ejemplo para linux:<br />
+  `$ sudo /opt/lampp/xampp start;`
+8. Cambiarse a la carpeta back y ejecutar el siguiente comando para correr el servidor del back.<br/>
   `$ ./mvnw spring-boot:run`
-8. Visitar la dirección localhost:3000 para revisar que la aplicación este funcionando correctamente.<br/>
+9. Visitar la dirección localhost:3000 para revisar que la aplicación este funcionando correctamente.<br/>
 
 ### Notas
 
