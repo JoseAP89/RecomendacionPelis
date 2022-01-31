@@ -1,4 +1,4 @@
-import {StyledNavBar} from '../styles/styledComponents/StyledNavBar'
+import {StyledNavBar} from '../styles/styledComponents/styledNavBar'
 import Link from 'next/link'
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
