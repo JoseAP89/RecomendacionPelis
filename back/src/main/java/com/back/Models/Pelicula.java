@@ -11,7 +11,6 @@ public class Pelicula {
     private String poster_path;
     private String release_date;
     private List<String> genre_ids;
-    private List<Pelicula> known_for;
     public Pelicula() {
     }
 
@@ -37,14 +36,6 @@ public class Pelicula {
     public List<String> getGenre_ids( ){
         return this.genre_ids;
     }
-    public List<Pelicula> getKnown_for( ){
-        return this.known_for;
-    }
-
-    public void setKnown_for(List<Pelicula> s){
-        this.known_for = s;
-    }
-
     public void setTitle(String t) {
         this.title = t;
     }
