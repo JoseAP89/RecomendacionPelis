@@ -1,4 +1,4 @@
-export default interface pelicula {
+export default interface Pelicula {
     id? : string,
     title? : string,
     overview? : string,

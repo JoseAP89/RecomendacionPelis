@@ -15,6 +15,6 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "styles/styledComponents/StyledNavBar.js", "styles/styledComponents/StyledIndex.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "styles/styledComponents/styledNavBar.js", "styles/styledComponents/styledIndex.js"],
   "exclude": ["node_modules"]
 }

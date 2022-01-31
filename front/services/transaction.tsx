@@ -2,6 +2,7 @@ import axios, { AxiosResponse, AxiosResponseHeaders } from 'axios';
 import Box from '../models/box';
 import Cuenta from '../models/cuenta';
 import FormaUsuario from '../models/formausuario';
+import Pelicula from '../models/pelicula';
 
 const TransactionService = {
     getGeneros,
@@ -59,7 +60,7 @@ async function checkToken(token: string): Promise<AxiosResponse<string>>{
     return axios.get(url,{params:{token}});
 }
 
-async function getRecomendacionby(token : string, tipoDeRecomendacion : string): Promise<any>{
+async function getRecomendacionby(token : string, tipoDeRecomendacion : string): Promise<AxiosResponse<Pelicula[]>>{
     const url = `${backendsrc}/api/peliculas/recomendacion`;
     // Default options are marked with *
     return axios.get(url, {params: {token, tipoDeRecomendacion}});
