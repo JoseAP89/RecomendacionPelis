@@ -92,8 +92,8 @@ const Home: NextPage = () => {
           <section className='head-home'>
             <h3>Bienvenido!</h3>
             <p style={{paddingBottom:"20px"}} >
-              Estimado cliente, ahora puedes abrir cuentas de ahorro con nosotros. <br/>
-              Presiona el enlace requerido de acuerdo a tus necesidades. Ofrecemos los siguientes servicios:
+              Estimado cliente, te proporcionamos un catálogo de películas con base en tus preferencias. <br/>
+              Tienes al alcance de un clic las películas que más se acercan a tus gustos, disfruta tu sitio.
             </p>
           </section> 
 
