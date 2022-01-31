@@ -9,7 +9,7 @@ import TransactionService from '../services/transaction';
 import Select from 'react-select';
 import FormaUsuario from '../models/formausuario'
 import Cuenta from '../models/cuenta';
-import StyleIndex from '../styles/styledComponents/StyledIndex'
+import StyleIndex from '../styles/styledComponents/styledIndex'
 import Theater from '../public/images/movie-theater.jpg';
 
 

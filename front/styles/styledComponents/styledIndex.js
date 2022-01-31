@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import Theater from '../../public/images/movie-theater.jpg';
 
 const StyledIndex = styled.div`
 
