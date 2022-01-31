@@ -104,16 +104,18 @@ Se deben tener los siguientes requerimientos:
 Una vez clonado el proyecto en tu local se debe seguir los siguientes pasos:
 1. Cambiarse al front y ejecutar el comando para instalar las dependencias del proyecto de front y correr el cliente en modo desarrollo.<br/>
   `$ npm install && npm run dev`
-3. Se debe crear una base de datos con el nombre peliculas.<br/>
+2. Se debe crear una base de datos con el nombre peliculas.<br/>
   `$ CREATE DATABASE testdb;`
-4. Crear un usuario para la base de datos que se llame 'movie' y tenga el password 'depelicula123'.<br/>
+3. Crear un usuario para la base de datos que se llame 'movie' y tenga el password 'depelicula123'.<br/>
   `$ create user 'movie'@'localhost' identified by 'depelicula123';`
-5. Otortgarle los privilegios necesitados al usuario sobre dicha base de datos.<br/>
+4. Otortgarle los privilegios necesitados al usuario sobre dicha base de datos.<br/>
   `$  grant all privileges on peliculas.* to movie@localhost;` 
-6. Correr el script migrations.sql en la linea de comandos de mysql, desde tu manejador de bases de datos, que tiene el código para generar las tablas necesarias del proyecto.<br/>
+5. Correr el script migrations.sql en la linea de comandos de mysql, desde tu manejador de bases de datos, que tiene el código para generar las tablas necesarias del proyecto.<br/>
   `$ source /ruta/absoluta/hacia/RecomendacionPelis/migrations.sql;`
+6. Encender Mysql con el comando establecido por XAMPP para tu SO, por ejemplo para linux:<br />
+  `$ sudo /opt/lampp/xampp start;`
 7. Cambiarse a la carpeta back y ejecutar el siguiente comando para correr el servidor del back.<br/>
-  `$ ./mvnw spring-boot:run`
+  `$ ./mvnw spring-boot:run `
 8. Visitar la dirección localhost:3000 para revisar que la aplicación este funcionando correctamente.<br/>
 
 ### Notas
