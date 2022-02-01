@@ -92,6 +92,10 @@ obtendrá de la “Open Movie Database”.
 
 ![picture alt](https://github.com/JoseAP89/RecomendacionPelis/blob/main/img/pantalla_home.png "home")
 
+## Componente Footer
+
+![picture alt](https://github.com/JoseAP89/RecomendacionPelis/blob/main/img/pantalla_footer.png "footer")
+
 ## Requisitos
 Se deben tener los siguientes requerimientos:
 * Node.js
