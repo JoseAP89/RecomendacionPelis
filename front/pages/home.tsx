@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 
 import { useEffect, useState } from 'react'
 import { Container} from 'react-bootstrap'
+import Footer from '../components/Footer'
 import MovieTile from '../components/MovieTile'
 import NavigationBar from '../components/NavigationBar'
 import FormaUsuario from '../models/formausuario'
@@ -134,6 +135,7 @@ const Home: NextPage = () => {
 
         </div>
       </div>
+      <Footer />
     </HomeGrid>
   )
 }
