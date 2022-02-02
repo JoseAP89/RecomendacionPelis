@@ -1,4 +1,5 @@
 package com.back.Controllers;
+import org.hibernate.annotations.SourceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +26,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.Collections;
+import java.util.Iterator;
 
 import com.back.Models.*;
 import com.back.Repositories.*;
@@ -45,6 +49,10 @@ public class MovieController {
 
     @Autowired 
     private FavoritoRepositorio favoritoRepositorio;
+
+    @Autowired 
+    private RecomendacionRepositorio recomendacionRepositorio;
+
 
     @Autowired
     JdbcTemplate database;
@@ -160,7 +168,7 @@ public class MovieController {
         }
         return s;
     }
-    private Iterable<Pelicula> byPelicula(String src){
+    private List<Pelicula> byPelicula(String src){
         List<Pelicula> peliculas = new ArrayList<>();
         try {
             URL url = new URL(src);
@@ -182,7 +190,7 @@ public class MovieController {
         return peliculas;
     }
 
-    private Iterable<Pelicula> byPersona(String src){
+    private List<Pelicula> byPersona(String src){
         List<Pelicula> peliculas = new ArrayList<>();
         try {
             URL url = new URL(src);
@@ -206,29 +214,71 @@ public class MovieController {
         return peliculas;
     }
 
+    private List<Pelicula> getRecomendacionTabla(long usuario_id, long catalogo_id){
+        String query = String.format("select * from recomendacion where usuario_id=%s and catalogo_id=%s", usuario_id, catalogo_id);
+        List<Pelicula> peliculas = this.database.query(query, new RowMapper<Pelicula>( ) {
+            public Pelicula mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Pelicula pelicula = new Pelicula( );
+                pelicula.setId(rs.getString("api_id"));
+                pelicula.setTitle(rs.getString("title"));
+                pelicula.setOverview(rs.getString("overview"));
+                pelicula.setPoster_path(rs.getString("poster_path"));
+                pelicula.setRelease_date(rs.getString("release_date"));
+                return pelicula;
+            }
+        });
+       return peliculas;
+    }
+    private void saveRecomendaciones(List<Pelicula> peliculas, Long usuario_id, Long catalogo_id){
+               //guardando en tabla de recomendaciones
+               ListIterator<Pelicula> it = peliculas.listIterator();
+               while(it.hasNext( )){
+                   Pelicula peli = it.next( );
+                   Recomendacion recomendacion = new Recomendacion( );
+                   recomendacion.setApi_id(Long.parseLong(peli.getId( )));
+                   recomendacion.setTitle(peli.getTitle( ));
+                   recomendacion.setOverview(peli.getOverview( ));
+                   recomendacion.setPoster_path(peli.getPoster_path( ));
+                   recomendacion.setRelease_date(peli.getRelease_date( ));
+                   recomendacion.setUsuario_id(usuario_id);
+                   recomendacion.setGenre_ids(peli.getGenre_ids( ).toString( ));
+                   recomendacion.setCatalogo_id(catalogo_id);
+                   recomendacionRepositorio.save(recomendacion);
+               }
+    }
     @GetMapping(path="/peliculas/recomendacion")
     public @ResponseBody ResponseEntity<Iterable<Pelicula>> getRecomendacionby(@RequestParam String token, @RequestParam String tipoDeRecomendacion) {
-        int catalogo_id;
+        long catalogo_id;
         String src;
+
+        long usuario_id = this.database.queryForObject(String.format("select usuario_id from usuario where token ='%s'", token), Integer.class);
+        List<Pelicula> peliculas = new ArrayList<>( );
 
         if(tipoDeRecomendacion.equals("pelicula")){
             catalogo_id = 2;
-            String query = String.format("select api_id from favorito where usuario_id=(select usuario_id from usuario where token ='%s') and catalogo_id=%s", token, catalogo_id);
-            int api_id = this.database.queryForObject(query, Integer.class);
-            src = String.format("https://api.themoviedb.org/3/movie/%s/recommendations?api_key=%s&language=es-MX", api_id, apy_key);
-            Iterable<Pelicula> peliculas = byPelicula(src);
+            peliculas = getRecomendacionTabla(usuario_id, catalogo_id);
 
-            return ResponseEntity.status(peliculas.iterator().hasNext() ? HttpStatus.ACCEPTED : HttpStatus.CONFLICT).body(peliculas);
+            if(peliculas.isEmpty( )){ // si es TRUE no teniamos recomendaciones guardadas
+                String query = String.format("select api_id from favorito where usuario_id=%s and catalogo_id=%s", usuario_id, catalogo_id);
+                int api_id = this.database.queryForObject(query, Integer.class);
+                src = String.format("https://api.themoviedb.org/3/movie/%s/recommendations?api_key=%s&language=es-MX", api_id, apy_key);
+                peliculas = byPelicula(src);
+                saveRecomendaciones(peliculas, usuario_id, catalogo_id);
+            }
         }else{
             catalogo_id = tipoDeRecomendacion.equals("actor") ? 3 : 4;
-            String query = String.format("select nombre_completo from favorito where usuario_id=(select usuario_id from usuario where token ='%s') and catalogo_id=%s", token, catalogo_id);
-            String nombre_completo = this.database.queryForObject(query, String.class);
-            nombre_completo = formateaNombre_completo(nombre_completo);
-            src = String.format("https://api.themoviedb.org/3/search/person?api_key=%s&query=%s",apy_key, nombre_completo);
-            Iterable<Pelicula> peliculas = byPersona(src);
-            
-            return ResponseEntity.status(peliculas.iterator().hasNext() ? HttpStatus.ACCEPTED : HttpStatus.CONFLICT).body(peliculas);
+            peliculas = getRecomendacionTabla(usuario_id, catalogo_id);
+
+            if(peliculas.isEmpty( )){ // si es null no teniamos recomendaciones guardadas
+                String query = String.format("select nombre_completo from favorito where usuario_id=%s and catalogo_id=%s", usuario_id, catalogo_id);
+                String nombre_completo = this.database.queryForObject(query, String.class);
+                nombre_completo = formateaNombre_completo(nombre_completo);
+                src = String.format("https://api.themoviedb.org/3/search/person?api_key=%s&query=%s",apy_key, nombre_completo);
+                peliculas = byPersona(src);    
+                saveRecomendaciones(peliculas, usuario_id, catalogo_id);            
+            }
         }
+        return ResponseEntity.status(peliculas.iterator().hasNext() ? HttpStatus.ACCEPTED : HttpStatus.CONFLICT).body(peliculas);
     }
 
     @GetMapping(path="/usuario") 
@@ -307,7 +357,6 @@ public class MovieController {
 
         // para actor
         Favorito actor_fav = new Favorito();
-        usuario = new Usuario();
         query = String.format("select catalogo_id from catalogo where nombre='%s' ", "actor");
         cat_id = this.database.queryForObject(query, Integer.class);
         actor_fav.setApi_id(forma.getActor_favorito_id());

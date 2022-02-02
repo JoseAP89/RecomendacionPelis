@@ -36,7 +36,6 @@ public class Pelicula {
     public List<String> getGenre_ids( ){
         return this.genre_ids;
     }
-    
     public void setTitle(String t) {
         this.title = t;
     }
