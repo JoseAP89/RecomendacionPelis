@@ -41,7 +41,8 @@ CREATE TABLE favorito (
 );
 
 CREATE TABLE recomendacion (
-    id int primary key,
+    recomendacion_id int primary key AUTO_INCREMENT,
+    api_id int not null,
     title varchar(300),
     overview varchar(600),
     poster_path varchar(100),
@@ -53,6 +54,7 @@ CREATE TABLE recomendacion (
     modificado TIMESTAMP,
     FOREIGN KEY (usuario_id) REFERENCES usuario(usuario_id),
     FOREIGN KEY (catalogo_id) REFERENCES catalogo(catalogo_id)
+
 );
 
 INSERT INTO catalogo(nombre, descripcion) VALUES
