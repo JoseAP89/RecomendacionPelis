@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 
 import { useEffect, useState } from 'react'
 import { Container} from 'react-bootstrap'
+import Footer from '../components/Footer'
 import MovieTile from '../components/MovieTile'
 import NavigationBar from '../components/NavigationBar'
 import FormaUsuario from '../models/formausuario'
@@ -92,8 +93,8 @@ const Home: NextPage = () => {
           <section className='head-home'>
             <h3>Bienvenido!</h3>
             <p style={{paddingBottom:"20px"}} >
-              Estimado cliente, ahora puedes abrir cuentas de ahorro con nosotros. <br/>
-              Presiona el enlace requerido de acuerdo a tus necesidades. Ofrecemos los siguientes servicios:
+              Estimado cliente, te proporcionamos un catálogo de películas con base en tus preferencias. <br/>
+              Tienes al alcance de un clic las películas que más se acercan a tus gustos, disfruta tu sitio.
             </p>
           </section> 
 
@@ -134,6 +135,7 @@ const Home: NextPage = () => {
 
         </div>
       </div>
+      <Footer />
     </HomeGrid>
   )
 }
