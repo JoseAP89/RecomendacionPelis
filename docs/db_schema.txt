@@ -12,6 +12,7 @@ edad int
 genero varchar
 correo varchar
 password varchar
+token varchar
 creado Date
 modificado Date
 
@@ -35,8 +36,13 @@ modificado Date
 
 recomendacion
 --
-recomendacion_id int pk
-pelicula_api_id int
+id int pk
+title varchar
+overview varchar
+poster_path varchar
+release_date varchar
 usuario_id int fk >- usuario.usuario_id
+catalogo_id int fk >- catalogo.catalogo_id 
+genre_ids varchar
 creado Date
 modificado Date
