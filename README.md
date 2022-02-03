@@ -84,9 +84,13 @@ obtendrá de la “Open Movie Database”.
 
 ![picture alt](https://github.com/JoseAP89/RecomendacionPelis/blob/main/docs/Modelo_ER.png "ER")
 
-## Pantalla de Inicio
+## Pantalla Inicio de sesión
 
-![picture alt](https://github.com/JoseAP89/RecomendacionPelis/blob/main/img/pantalla_inicio.png "inicio")
+![picture alt](https://github.com/JoseAP89/RecomendacionPelis/blob/main/img/pantalla_login.png "login")
+
+## Pantalla Crear Usuario
+
+![picture alt](https://github.com/JoseAP89/RecomendacionPelis/blob/main/img/pantalla_crear_usuario.png "crear usuario")
 
 ## Pantalla Home
 
