@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Container, Form, Button, Alert} from 'react-bootstrap'
 import { Controller, useForm } from "react-hook-form";
 import Box from '../models/box';
@@ -40,6 +40,12 @@ const Index: NextPage = () => {
   // alertas en el post de agregar usuario, si positivo mensaje de exito, si neg mensaje de error, si null no se muestra nada
   const [postUsuarioStatus, setPostUsuarioStatus] = useState<boolean|null>(null);
   const [postUsuarioRegistradoStatus, setUsuarioRegistradoStatus] = useState<boolean|null>(null);
+
+  // refs a los react-select 
+  const selectInputDir = useRef<any>();
+  const selectInputActor = useRef<any>();
+  const selectInputGenre = useRef<any>();
+  const selectInputPeli = useRef<any>();
 
 	useEffect(() => {
     if (generos.length==0) {
@@ -106,6 +112,10 @@ const Index: NextPage = () => {
     TransactionService.addUsuario(usuario).then((res) => {
         setPostUsuarioStatus(true);
         reset();
+        selectInputPeli.current.setValue("");
+        selectInputDir.current.setValue("");
+        selectInputActor.current.setValue("");
+        selectInputGenre.current.setValue("");
     }).catch((err) => {
         setPostUsuarioStatus(false);
     }).finally(()=>{
@@ -280,6 +290,7 @@ const Index: NextPage = () => {
                       escapeClearsValue={true}
                       isClearable={true}
                       isSearchable={true}
+                      ref={selectInputGenre}
                       options=
                       {
                         generos.map((genero: Box) =>{
@@ -311,6 +322,7 @@ const Index: NextPage = () => {
                       onInputChange={(value)=> setSearchActor(value.replaceAll(/\s+/g,"+"))}
                       className="select-react"
                       escapeClearsValue={true}
+                      ref={selectInputActor}
                       isClearable={true}
                       isSearchable={true}
                       options=
@@ -344,6 +356,7 @@ const Index: NextPage = () => {
                       className="select-react"
                       onInputChange={(value)=> setSearchDir(value.replaceAll(/\s+/g,"+"))}
                       isSearchable={true}
+                      ref={selectInputDir}
                       isClearable={true}
                       escapeClearsValue={true}
                       options=
@@ -375,6 +388,7 @@ const Index: NextPage = () => {
                     <Select 
                       {...field} 
                       className="select-react"
+                      ref={selectInputPeli}
                       onInputChange={(value)=> setSearchPeli(value.replaceAll(/\s+/g,"+"))}
                       isSearchable={true}
                       isClearable={true}
