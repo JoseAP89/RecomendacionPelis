@@ -5,6 +5,7 @@ import Head from 'next/head';
 import { Button, Modal } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import FormaUsuario from '../models/formausuario';
+import TransactionService from '../services/transaction';
 
 interface PropsUsuario {
 	usuario: FormaUsuario | undefined,
@@ -19,8 +20,17 @@ const NavigationBar = ({usuario}: PropsUsuario) => {
 
 
 	function cerrarSesion() {
-      sessionStorage.setItem("token","");
-      router.push('/');
+		let token = sessionStorage.getItem("token");
+		if (!!token) {
+			TransactionService.cleanCache(token).then( (res) =>{
+				console.log(res.data);
+			}).catch((err) =>{
+				console.log(err);
+			})
+			
+		}
+		sessionStorage.setItem("token","");
+		router.push('/');
 	}
 
 	return (

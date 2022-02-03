@@ -12,7 +12,8 @@ const TransactionService = {
     checkUsuario,
     checkToken,
     getUsuario,
-    getRecomendacionby
+    getRecomendacionby,
+    cleanCache
 }
 
 const backendsrc = "http://localhost:8080"
@@ -64,6 +65,12 @@ async function getRecomendacionby(token : string, tipoDeRecomendacion : string):
     const url = `${backendsrc}/api/peliculas/recomendacion`;
     // Default options are marked with *
     return axios.get(url, {params: {token, tipoDeRecomendacion}});
+}
+
+async function cleanCache(token : string): Promise<AxiosResponse<string>>{
+    const url = `${backendsrc}/api/usuario/clean-cache`;
+    // Default options are marked with *
+    return axios.delete(url, {params: {token}});
 }
 
 export default TransactionService;

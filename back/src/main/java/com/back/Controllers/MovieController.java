@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -412,6 +413,20 @@ public class MovieController {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(usuario.getAlias());
         }else{
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Token invalido");
+        }
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000", methods = RequestMethod.DELETE)
+    @DeleteMapping(path="/usuario/clean-cache") 
+    public ResponseEntity<String> cleanCache (@RequestParam String token){
+        String query = String.format("select usuario_id from usuario where token='%s' ", token);
+        int usuario_id = this.database.queryForObject(query, Integer.class);
+        try {
+            this.database.update("delete from recomendacion where usuario_id = ?", usuario_id);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Cache del usuario borrado exitosamente");
+            
+        } catch (Exception _e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error al borrar el cache del usuario.");
         }
     }
 }
