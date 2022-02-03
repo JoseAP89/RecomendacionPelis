@@ -44,7 +44,7 @@ CREATE TABLE recomendacion (
     recomendacion_id int primary key AUTO_INCREMENT,
     api_id int not null,
     title varchar(300),
-    overview varchar(600),
+    overview text,
     poster_path varchar(100),
     release_date varchar(20),
     usuario_id int not null,
