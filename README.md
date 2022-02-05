@@ -96,6 +96,13 @@ obtendrá de la “Open Movie Database”.
 
 ![picture alt](https://github.com/JoseAP89/RecomendacionPelis/blob/main/img/pantalla_home.png "home")
 
+## Componente Buscador
+
+Se tienen en la app 3 componentes html -película, actor y director favorito-, que mientras se va escribiendo te trae los resultados para tu búsqueda en la api de TheMoveDB, así se garantiza que en la BD se guardarán solamente aquellos recursos existentes, también ayuda a que haya integridad en la BD y no se guarde contenido con faltas de ortografía o contenido no existente.
+
+![picture alt](https://github.com/JoseAP89/RecomendacionPelis/blob/main/img/componente_buscador.png "busqueda")
+
+
 ## Componente Footer
 
 ![picture alt](https://github.com/JoseAP89/RecomendacionPelis/blob/main/img/pantalla_footer.png "footer")
