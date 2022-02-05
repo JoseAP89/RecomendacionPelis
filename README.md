@@ -82,6 +82,27 @@ obtendrá de la “Open Movie Database”.
 
 ## Modelo Entidad-Relación
 
+Cuenta de 4 tablas la BD, usuario, favorito, recomendacion y catalogo. Las cuales cumplen las siguientes funciones. <br/>
+* Usuario:<br/>
+Guarda la información básica de usuario, como su nombre, correo, apellidos, etc. El token de usuario es generado en el back para autentificar al usuario a la pantalla de home. Al crear el usuario el back le asigna un único token que al iniciar sesión, con sus credenciales correctas, el back le regresa su token el cual es almacenado en el session storage del cliente, y este es solicitado en la pantalla home para autentificar al usuario. Si se ingresa sin un token, o con uno inventado o falso, el cliente solicita al back validar la integridad del token, si no existe entonces regresa error y se niega el acceso.<br/>
+* Favorito:<br/>
+Almacena la información de las películas, actores, géneros y directores favoritos del usuario, que son validados como recursos válidos por el front.<br/>
+* Catalogo:<br/>
+Contiene un catálogo que indica si el dato almacenado hace referencia a una película, actor, director o a un género en particular. Los registros de dicha tabla son los mostrados en la siguiente tabla.<br/>
+
+Tabla de Catalogos.<br/>
+
+|Catálogo ID |     Nombre      | Descripción 
+|:----------:|:---------------:|-----------------------------------------------
+|      1     |     Genero      |   Genero de la pelicula
+|      2     |     Pelicula    |   Pelicula de la cual se hace referencia
+|      3     |     Actor       |   Persona con rol de actor en la pelicula
+|      4     |     Director    |   Persona con rol de director en la pelicula
+
+* Recomandacion:<br/>
+Funciona como un caché para el sistema de recomendaciones. La primera vez que el usuario ingresa a la aplicación, y ha sido verificado correctamente por el back, entonces el cliente solicita al back las recomendaciones con base en su información guardada en la tabla de favoritos, con esta información el back solicita a la api las películas según los gustos del usuario y son almacenadas en la tabla Recomendacion. De esta forma al refrescar la página o al moverse a otras, suponiendo existieran más, las recomendaciones del usuario serían obtenidas directamente de la BD y no de la api, lo cual incrementa el rendimiento de la aplicación y evita viajes innecesarios a la api. Al cerrar sesión el usuario, se limpia el "cache" del usuario y la próxima vez que inicie sesión recibirá nuevas recomendaciones.
+
+
 ![picture alt](https://github.com/JoseAP89/RecomendacionPelis/blob/main/docs/Modelo_ER.png "ER")
 
 ## Pantalla Inicio de sesión
