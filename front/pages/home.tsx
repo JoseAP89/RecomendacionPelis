@@ -18,6 +18,7 @@ const Home: NextPage = () => {
   const router = useRouter()
   const [alias, setAlias] = useState<string>("");
   const [usuario, setUsuario] = useState<FormaUsuario>();
+  const [recomendacionesGenero, setRecomendacionesGenero] = useState<Array<Pelicula> | undefined>();
   const [recomendacionesActor, setRecomendacionesActor] = useState<Array<Pelicula> | undefined>();
   const [recomendacionesDir, setRecomendacionesDir] = useState<Array<Pelicula> | undefined>();
   const [recomendacionesPeli, setRecomendacionesPeli] = useState<Array<Pelicula> | undefined>();
@@ -66,6 +67,12 @@ const Home: NextPage = () => {
     }).catch((err) => {
       console.log(err);
     });
+    TransactionService.getRecomendacionby(token, "genero").then((res) => {
+      console.log("genero:: ",res);
+      setRecomendacionesGenero(res.data)
+    }).catch((err) => {
+      console.log(err);
+    });
   }, []);
 
   useEffect(() => {
@@ -98,9 +105,24 @@ const Home: NextPage = () => {
             </p>
           </section> 
 
+          <section>
+            <div className=''>
+              <h5>RECOMENDACIONES X GÉNERO</h5>
+              <div className='mosaic-genre'>
+              { !!recomendacionesGenero &&
+                recomendacionesGenero.map( peli => {
+                  return (
+                    <MovieTile pelicula={peli} />
+                  )
+                })
+              }
+              </div>
+            </div>
+          </section>
+
           <section className='movie-grid'>
             <div className='movie-recomendacion'>
-              <h5>RECOMENDACIONES</h5>
+              <h5>RECOMENDACIONES X PELICULA</h5>
               <div className='mosaic'>
               { !!recomendacionesPeli &&
                 recomendacionesPeli.map( peli => {

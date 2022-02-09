@@ -11,6 +11,7 @@ const HomeGrid = styled.div`
         color: white;
 
         .movie-grid {
+            margin-top: 40px;
             display: grid;
             grid-template-columns: 3fr 1fr;
             column-gap: 10px;
@@ -50,7 +51,20 @@ const HomeGrid = styled.div`
 
         }
 
+        .mosaic-genre {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 280px;
+            gap: 20px;
+        }
+
         @media (max-width: 950px) {
+            .mosaic-genre {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                grid-auto-rows: 240px;
+                gap: 20px;
+            }
             .movie-grid{
                 display: grid;
                 grid-template-columns: 2fr 1fr;
@@ -69,7 +83,21 @@ const HomeGrid = styled.div`
                 }
             }
         }
+        @media (max-width: 720px) {
+            .mosaic-genre {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                grid-auto-rows: 240px;
+                gap: 20px;
+            }
+        }
         @media (max-width: 620px) {
+            .mosaic-genre {
+                display: grid;
+                grid-template-columns: repeat(1, 1fr);
+                grid-auto-rows: 240px;
+                gap: 20px;
+            }
             .movie-grid{
                 display: grid;
                 grid-template-columns: 1fr;

@@ -230,6 +230,7 @@ public class MovieController {
         });
        return peliculas;
     }
+
     private void saveRecomendaciones(List<Pelicula> peliculas, Long usuario_id, Long catalogo_id){
                //guardando en tabla de recomendaciones
                ListIterator<Pelicula> it = peliculas.listIterator();
@@ -247,6 +248,7 @@ public class MovieController {
                    recomendacionRepositorio.save(recomendacion);
                }
     }
+
     @GetMapping(path="/peliculas/recomendacion")
     public @ResponseBody ResponseEntity<Iterable<Pelicula>> getRecomendacionby(@RequestParam String token, @RequestParam String tipoDeRecomendacion) {
         long catalogo_id;
@@ -255,7 +257,19 @@ public class MovieController {
         long usuario_id = this.database.queryForObject(String.format("select usuario_id from usuario where token ='%s'", token), Integer.class);
         List<Pelicula> peliculas = new ArrayList<>( );
 
-        if(tipoDeRecomendacion.equals("pelicula")){
+        if(tipoDeRecomendacion.equals("genero")){
+            catalogo_id = 1;
+            peliculas = getRecomendacionTabla(usuario_id, catalogo_id);
+
+            if(peliculas.isEmpty( )){ // si es TRUE no teniamos recomendaciones guardadas
+                String query = String.format("select api_id from favorito where usuario_id=%s and catalogo_id=%s", usuario_id, catalogo_id);
+                int api_id = this.database.queryForObject(query, Integer.class);
+                src = String.format("https://api.themoviedb.org/3/discover/movie?api_key=%s&language=es-MX&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=%s&with_watch_monetization_types=flatrate", apy_key,api_id);
+                peliculas = byPelicula(src);
+                saveRecomendaciones(peliculas, usuario_id, catalogo_id);
+            }
+
+        } else if (tipoDeRecomendacion.equals("pelicula")){
             catalogo_id = 2;
             peliculas = getRecomendacionTabla(usuario_id, catalogo_id);
 
